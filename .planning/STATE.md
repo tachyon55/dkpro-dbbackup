@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-03-28T16:13:41.298Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-03-28T16:32:34.497Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 4
-  completed_plans: 4
+  completed_plans: 5
   percent: 8
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 01 (foundation-auth-connections) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-03-28
 
@@ -55,6 +55,7 @@ Progress: [█░░░░░░░░░] 8%
 | Phase 01 P03 | 6 | 2 tasks | 12 files |
 | Phase 01 P02 | 7 | 2 tasks | 17 files |
 | Phase 01 P04 | 184 | 2 tasks | 10 files |
+| Phase 01 P05 | 4 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Zod 4 uses .issues not .errors on ZodError — fixed in all validation routes
 - [Phase 01]: Server component delegates to UsersPageClient for RBAC-checked admin pages — avoids prop-drilling session
 - [Phase 01]: ColorPicker uses inline box-shadow for selected ring state; ConnectionModal uses unified form with conditional password logic
+- [Phase 01]: Prisma JSON null requires Prisma.JsonNull sentinel (not JS null) for nullable Json fields
+- [Phase 01]: Audit failures caught silently in createAuditLog — never propagate to the main operation
 
 ### Pending Todos
 
@@ -85,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T16:13:41.293Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-03-28T16:32:34.493Z
+Stopped at: Completed 01-05-PLAN.md
 Resume file: None
