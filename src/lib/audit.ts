@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
 import type { AuditEventType } from "@prisma/client"
 
 export async function createAuditLog(params: {
@@ -9,13 +10,16 @@ export async function createAuditLog(params: {
   metadata?: Record<string, unknown> | null
 }) {
   try {
+    const metadata: Prisma.InputJsonValue | typeof Prisma.JsonNull =
+      params.metadata != null ? (params.metadata as Prisma.InputJsonValue) : Prisma.JsonNull
+
     await prisma.auditLog.create({
       data: {
         userId: params.userId ?? null,
         userEmail: params.userEmail ?? null,
         event: params.event,
         targetId: params.targetId ?? null,
-        metadata: params.metadata ?? null,
+        metadata,
       },
     })
   } catch {
