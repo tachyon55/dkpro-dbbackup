@@ -45,7 +45,7 @@ Declared values (multiples of 4 only):
 | 3xl | 64px | Not used in this phase |
 
 Exceptions:
-- Backup button height: 28px (`h-7`) — matches existing dropdown trigger sizing on ConnectionCard
+- Backup button height: 28px (`h-7`) — component height constraint (not a layout spacing token; does not affect grid alignment). Matches existing dropdown trigger sizing on ConnectionCard for Phase 1 continuity.
 - Connection card fixed height: 140px — established in Phase 1, do not change
 - Touch targets minimum: 44px height for primary action buttons in BackupProgressModal
 
@@ -56,11 +56,11 @@ Exceptions:
 | Role | Size | Weight | Line Height | Font | Usage |
 |------|------|--------|-------------|------|-------|
 | Body | 14px (`text-sm`) | 400 (normal) | 1.5 | Geist Sans | Table cells, modal body text, filter labels |
-| Label | 12px (`text-xs`) | 500 (medium) | 1.4 | Geist Sans | Badge text, column headers, metadata (file size, duration) |
+| Label | 12px (`text-xs`) | 600 (semibold) | 1.4 | Geist Sans | Badge text, column headers, metadata (file size, duration) |
 | Heading | 16px (`text-base`) | 600 (semibold) | 1.25 | Geist Sans | Modal title, page section headers, detail panel title |
 | Mono | 12px (`text-xs`) | 400 (normal) | 1.6 | Geist Mono | Log stream lines in BackupProgressModal, SHA-256 hash display |
 
-**Rule:** Never exceed 2 weights on a single surface. Body/Label surfaces use 400 + 600. Mono log surfaces use 400 only.
+**Rule:** Exactly 2 weights across the system: 400 (normal) for Body and Mono roles; 600 (semibold) for Label and Heading roles. Never introduce a third weight (e.g., 500 medium) on any surface.
 
 ---
 
