@@ -26,7 +26,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **CONN-05**: 6가지 DB 타입을 지원한다 (MySQL, MariaDB, PostgreSQL, SQL Server, Oracle, SQLite)
 - [x] **CONN-06**: DB 비밀번호가 AES-256-GCM으로 암호화되어 저장된다
 - [x] **CONN-07**: 연결 후 사용 가능한 DB 목록을 조회할 수 있다
-- [ ] **CONN-08**: 연결별 시각적 구분 색상을 지정할 수 있다
+- [x] **CONN-08**: 연결별 시각적 구분 색상을 지정할 수 있다
 
 ### Backup Execution
 
@@ -127,7 +127,7 @@ Deferred to future release.
 | CONN-05 | Phase 1 | Complete |
 | CONN-06 | Phase 1 | Complete |
 | CONN-07 | Phase 1 | Complete |
-| CONN-08 | Phase 1 | Pending |
+| CONN-08 | Phase 1 | Complete |
 | BKUP-01 | Phase 2 | Pending |
 | BKUP-02 | Phase 2 | Pending |
 | BKUP-03 | Phase 2 | Pending |
