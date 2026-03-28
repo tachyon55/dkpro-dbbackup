@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { encrypt } from "@/lib/crypto"
 import { createConnectionSchema } from "@/lib/validations/connection"
+import { createAuditLog } from "@/lib/audit"
 
 // ── GET /api/connections — List all connections ───────────────────────────────
 export async function GET() {
@@ -93,6 +94,14 @@ export async function POST(request: Request) {
       createdAt: true,
       updatedAt: true,
     },
+  })
+
+  await createAuditLog({
+    userId: session.user.id,
+    userEmail: session.user.email,
+    event: "CONN_CREATE",
+    targetId: connection.id,
+    metadata: { name: connection.name, type: connection.type, host: connection.host },
   })
 
   return NextResponse.json({ data: connection }, { status: 201 })

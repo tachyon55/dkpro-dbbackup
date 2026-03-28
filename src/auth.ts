@@ -5,6 +5,7 @@ import type { Adapter } from "next-auth/adapters"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { authConfig } from "./auth.config"
+import { createAuditLog } from "@/lib/audit"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -44,6 +45,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 : null,
             },
           })
+          if (newAttempts >= 5) {
+            await createAuditLog({
+              userId: user.id,
+              userEmail: user.email,
+              event: "LOGIN",
+              metadata: { method: "credentials", lockout: true, attempts: newAttempts },
+            })
+          }
           return null
         }
 
@@ -55,6 +64,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             lockedUntil: null,
             lastLoginAt: new Date(),
           },
+        })
+
+        await createAuditLog({
+          userId: user.id,
+          userEmail: user.email,
+          event: "LOGIN",
+          metadata: { method: "credentials" },
         })
 
         return {

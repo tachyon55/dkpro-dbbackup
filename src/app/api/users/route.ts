@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { createUserSchema } from "@/lib/validations/user"
 import bcrypt from "bcryptjs"
+import { createAuditLog } from "@/lib/audit"
 
 // ── GET /api/users — List all users (admin only) ─────────────────────────────
 export async function GET() {
@@ -85,6 +86,14 @@ export async function POST(request: Request) {
       lastLoginAt: true,
       createdAt: true,
     },
+  })
+
+  await createAuditLog({
+    userId: session.user.id,
+    userEmail: session.user.email,
+    event: "USER_CREATE",
+    targetId: user.id,
+    metadata: { email: user.email, name: user.name, role: user.role },
   })
 
   return NextResponse.json({ data: user }, { status: 201 })

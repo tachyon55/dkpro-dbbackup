@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { encrypt } from "@/lib/crypto"
 import { updateConnectionSchema } from "@/lib/validations/connection"
+import { createAuditLog } from "@/lib/audit"
 
 const CONNECTION_SELECT = {
   id: true,
@@ -110,6 +111,14 @@ export async function PUT(
     select: CONNECTION_SELECT,
   })
 
+  await createAuditLog({
+    userId: session.user.id,
+    userEmail: session.user.email,
+    event: "CONN_UPDATE",
+    targetId: id,
+    metadata: { name: connection.name, changes: Object.keys(updateData) },
+  })
+
   return NextResponse.json({ data: connection })
 }
 
@@ -137,6 +146,14 @@ export async function DELETE(
   }
 
   await prisma.dbConnection.delete({ where: { id } })
+
+  await createAuditLog({
+    userId: session.user.id,
+    userEmail: session.user.email,
+    event: "CONN_DELETE",
+    targetId: id,
+    metadata: { name: existing.name, type: existing.type },
+  })
 
   return NextResponse.json({ data: { deleted: true } })
 }

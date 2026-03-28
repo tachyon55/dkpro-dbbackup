@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { updateUserSchema } from "@/lib/validations/user"
+import { createAuditLog } from "@/lib/audit"
 
 // ── GET /api/users/[id] — Get single user (admin only) ───────────────────────
 export async function GET(
@@ -103,6 +104,24 @@ export async function PUT(
     },
   })
 
+  if (updates.role && updates.role !== targetUser.role) {
+    await createAuditLog({
+      userId: session.user.id,
+      userEmail: session.user.email,
+      event: "ROLE_CHANGE",
+      targetId: id,
+      metadata: { from: targetUser.role, to: updates.role, email: targetUser.email },
+    })
+  }
+
+  await createAuditLog({
+    userId: session.user.id,
+    userEmail: session.user.email,
+    event: "USER_UPDATE",
+    targetId: id,
+    metadata: { changes: Object.keys(updates), email: targetUser.email },
+  })
+
   return NextResponse.json({ data: updated })
 }
 
@@ -150,6 +169,14 @@ export async function DELETE(
   }
 
   await prisma.user.delete({ where: { id } })
+
+  await createAuditLog({
+    userId: session.user.id,
+    userEmail: session.user.email,
+    event: "USER_DELETE",
+    targetId: id,
+    metadata: { email: targetUser.email, role: targetUser.role },
+  })
 
   return NextResponse.json({ data: { message: "사용자가 삭제되었습니다" } })
 }
