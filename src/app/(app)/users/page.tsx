@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
+import { UsersPageClient } from "./UsersPageClient"
 
 export default async function UsersPage() {
   const session = await auth()
@@ -20,10 +21,5 @@ export default async function UsersPage() {
     )
   }
 
-  return (
-    <div>
-      <h1 className="text-2xl font-semibold text-neutral-900 mb-2">사용자 관리</h1>
-      <p className="text-neutral-500">사용자 목록이 여기에 표시됩니다</p>
-    </div>
-  )
+  return <UsersPageClient currentUserId={session.user.id} />
 }
