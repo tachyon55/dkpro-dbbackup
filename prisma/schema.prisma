@@ -1,0 +1,124 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  admin
+  operator
+  viewer
+}
+
+enum DbType {
+  mysql
+  mariadb
+  postgresql
+  sqlserver
+  oracle
+  sqlite
+}
+
+enum AuditEventType {
+  LOGIN
+  LOGOUT
+  USER_CREATE
+  USER_UPDATE
+  USER_DELETE
+  ROLE_CHANGE
+  CONN_CREATE
+  CONN_UPDATE
+  CONN_DELETE
+  CONN_TEST
+}
+
+model User {
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  name                 String
+  password             String?   // bcrypt hash; null for future OAuth
+  role                 Role      @default(viewer)
+  isActive             Boolean   @default(true)
+  mustChangePassword   Boolean   @default(false)
+  failedLoginAttempts  Int       @default(0)
+  lockedUntil          DateTime?
+  lastLoginAt          DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  auditLogs            AuditLog[]
+
+  // NextAuth required fields (for PrismaAdapter + future OAuth)
+  accounts             Account[]
+  sessions             Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model DbConnection {
+  id           String   @id @default(cuid())
+  name         String
+  type         DbType
+  host         String?  // null for SQLite (file path only)
+  port         Int?
+  username     String?
+  password     String?  // AES-256-GCM encrypted ciphertext
+  database     String?
+  filePath     String?  // SQLite only
+  sid          String?  // Oracle SID
+  serviceName  String?  // Oracle Service Name
+  color        String   @default("#6366f1")  // hex color from preset palette
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String         @id @default(cuid())
+  userId    String?        // null for unauthenticated events (e.g., failed login)
+  userEmail String?        // denormalized — preserve email even if user deleted
+  event     AuditEventType
+  targetId  String?        // e.g., userId or connectionId affected
+  metadata  Json?          // additional details (before/after values, IP, etc.)
+  createdAt DateTime       @default(now())
+
+  user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])    // for 90-day cleanup and date-range queries
+  @@index([event])
+  @@index([userId])
+}
