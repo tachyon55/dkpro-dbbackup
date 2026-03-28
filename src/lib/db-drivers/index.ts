@@ -1,0 +1,66 @@
+export type DbType = "mysql" | "mariadb" | "postgresql" | "sqlserver" | "oracle" | "sqlite"
+
+export interface DbConnectionConfig {
+  type: DbType
+  host?: string | null
+  port?: number | null
+  username?: string | null
+  password?: string | null  // decrypted plaintext
+  database?: string | null
+  filePath?: string | null
+  sid?: string | null
+  serviceName?: string | null
+}
+
+export interface TestResult {
+  success: boolean
+  latencyMs?: number
+  error?: string
+}
+
+export async function testConnection(config: DbConnectionConfig): Promise<TestResult> {
+  const start = Date.now()
+  try {
+    switch (config.type) {
+      case "mysql":
+      case "mariadb":
+        await (await import("./mysql")).testMysql(config)
+        break
+      case "postgresql":
+        await (await import("./postgres")).testPostgres(config)
+        break
+      case "sqlserver":
+        await (await import("./mssql")).testMssql(config)
+        break
+      case "sqlite":
+        await (await import("./sqlite")).testSqlite(config)
+        break
+      case "oracle":
+        await (await import("./oracle")).testOracle(config)
+        break
+      default:
+        throw new Error(`Unsupported database type: ${(config as DbConnectionConfig).type}`)
+    }
+    return { success: true, latencyMs: Date.now() - start }
+  } catch (err) {
+    return { success: false, error: (err as Error).message, latencyMs: Date.now() - start }
+  }
+}
+
+export async function listDatabases(config: DbConnectionConfig): Promise<string[]> {
+  switch (config.type) {
+    case "mysql":
+    case "mariadb":
+      return (await import("./mysql")).listMysqlDatabases(config)
+    case "postgresql":
+      return (await import("./postgres")).listPostgresDatabases(config)
+    case "sqlserver":
+      return (await import("./mssql")).listMssqlDatabases(config)
+    case "sqlite":
+      return (await import("./sqlite")).listSqliteDatabases(config)
+    case "oracle":
+      return (await import("./oracle")).listOracleDatabases(config)
+    default:
+      throw new Error(`Unsupported database type: ${(config as DbConnectionConfig).type}`)
+  }
+}
