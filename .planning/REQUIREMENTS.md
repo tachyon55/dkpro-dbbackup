@@ -19,13 +19,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Connection Management
 
-- [ ] **CONN-01**: 사용자가 DB 연결을 생성할 수 있다 (이름, 호스트, 포트, 사용자명, 비밀번호, DB명, 타입)
-- [ ] **CONN-02**: 사용자가 DB 연결을 수정할 수 있다
-- [ ] **CONN-03**: 사용자가 DB 연결을 삭제할 수 있다
-- [ ] **CONN-04**: 사용자가 연결 테스트를 실행할 수 있다 (저장 전 검증)
-- [ ] **CONN-05**: 6가지 DB 타입을 지원한다 (MySQL, MariaDB, PostgreSQL, SQL Server, Oracle, SQLite)
-- [ ] **CONN-06**: DB 비밀번호가 AES-256-GCM으로 암호화되어 저장된다
-- [ ] **CONN-07**: 연결 후 사용 가능한 DB 목록을 조회할 수 있다
+- [x] **CONN-01**: 사용자가 DB 연결을 생성할 수 있다 (이름, 호스트, 포트, 사용자명, 비밀번호, DB명, 타입)
+- [x] **CONN-02**: 사용자가 DB 연결을 수정할 수 있다
+- [x] **CONN-03**: 사용자가 DB 연결을 삭제할 수 있다
+- [x] **CONN-04**: 사용자가 연결 테스트를 실행할 수 있다 (저장 전 검증)
+- [x] **CONN-05**: 6가지 DB 타입을 지원한다 (MySQL, MariaDB, PostgreSQL, SQL Server, Oracle, SQLite)
+- [x] **CONN-06**: DB 비밀번호가 AES-256-GCM으로 암호화되어 저장된다
+- [x] **CONN-07**: 연결 후 사용 가능한 DB 목록을 조회할 수 있다
 - [ ] **CONN-08**: 연결별 시각적 구분 색상을 지정할 수 있다
 
 ### Backup Execution
@@ -120,13 +120,13 @@ Deferred to future release.
 | AUTH-05 | Phase 1 | Pending |
 | AUTH-06 | Phase 1 Plan 01-01 | Done |
 | AUTH-07 | Phase 1 | Pending |
-| CONN-01 | Phase 1 | Pending |
-| CONN-02 | Phase 1 | Pending |
-| CONN-03 | Phase 1 | Pending |
-| CONN-04 | Phase 1 | Pending |
-| CONN-05 | Phase 1 | Pending |
-| CONN-06 | Phase 1 | Pending |
-| CONN-07 | Phase 1 | Pending |
+| CONN-01 | Phase 1 | Complete |
+| CONN-02 | Phase 1 | Complete |
+| CONN-03 | Phase 1 | Complete |
+| CONN-04 | Phase 1 | Complete |
+| CONN-05 | Phase 1 | Complete |
+| CONN-06 | Phase 1 | Complete |
+| CONN-07 | Phase 1 | Complete |
 | CONN-08 | Phase 1 | Pending |
 | BKUP-01 | Phase 2 | Pending |
 | BKUP-02 | Phase 2 | Pending |
