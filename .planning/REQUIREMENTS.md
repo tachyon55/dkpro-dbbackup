@@ -12,10 +12,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AUTH-01**: 사용자가 이메일/비밀번호로 로그인할 수 있다
 - [x] **AUTH-02**: 사용자가 로그아웃할 수 있다
 - [x] **AUTH-03**: 세션이 브라우저 새로고침 후에도 유지된다
-- [ ] **AUTH-04**: admin이 사용자를 생성/수정/삭제할 수 있다
-- [ ] **AUTH-05**: 사용자에게 admin/operator/viewer 역할을 부여할 수 있다
+- [x] **AUTH-04**: admin이 사용자를 생성/수정/삭제할 수 있다
+- [x] **AUTH-05**: 사용자에게 admin/operator/viewer 역할을 부여할 수 있다
 - [x] **AUTH-06**: viewer는 조회만, operator는 백업 실행/쿼리 실행, admin은 모든 권한을 가진다
-- [ ] **AUTH-07**: 모든 주요 작업(백업, 연결 변경, 사용자 변경)이 감사 로그에 기록된다
+- [x] **AUTH-07**: 모든 주요 작업(백업, 연결 변경, 사용자 변경)이 감사 로그에 기록된다
 
 ### Connection Management
 
@@ -116,10 +116,10 @@ Deferred to future release.
 | AUTH-01 | Phase 1 Plan 01-01 | Done |
 | AUTH-02 | Phase 1 Plan 01-01 | Done |
 | AUTH-03 | Phase 1 Plan 01-01 | Done |
-| AUTH-04 | Phase 1 | Pending |
-| AUTH-05 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Complete |
+| AUTH-05 | Phase 1 | Complete |
 | AUTH-06 | Phase 1 Plan 01-01 | Done |
-| AUTH-07 | Phase 1 | Pending |
+| AUTH-07 | Phase 1 | Complete |
 | CONN-01 | Phase 1 | Complete |
 | CONN-02 | Phase 1 | Complete |
 | CONN-03 | Phase 1 | Complete |
