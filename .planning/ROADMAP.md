@@ -29,7 +29,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. viewer는 조회 전용, operator는 백업·쿼리 실행, admin은 모든 기능에 접근된다
   4. DB 연결을 생성/수정/삭제하고 저장 전 연결 테스트를 실행할 수 있다 (6가지 DB 타입 지원)
   5. 저장된 DB 비밀번호가 AES-256-GCM으로 암호화되어 있으며 평문이 DB에 저장되지 않는다
-**Plans**: 3 (01-01: done, 01-02: pending, 01-03: pending)
+**Plans**: 5 plans
+Plans:
+- [x] 01-01-PLAN.md — Project init, auth, RBAC, layout
+- [x] 01-02-PLAN.md — User management CRUD + UI
+- [x] 01-03-PLAN.md — Connection API, encryption, DB drivers
+- [x] 01-04-PLAN.md — Connections UI (cards, modal, detail)
+- [ ] 01-05-PLAN.md — Audit logging writes + listing UI (gap closure, AUTH-07)
 **UI hint**: yes
 
 ### Phase 2: Backup Engine + History
@@ -77,7 +83,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth + Connections | 2/3 | In Progress|  |
+| 1. Foundation + Auth + Connections | 4/5 | In Progress|  |
 | 2. Backup Engine + History | 0/TBD | Not started | - |
 | 3. Automation + Notifications | 0/TBD | Not started | - |
 | 4. Dashboard + Query Executor + Cloud Storage | 0/TBD | Not started | - |
