@@ -84,6 +84,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Auth + Connections | 5/4 | Complete   | 2026-03-28 |
-| 2. Backup Engine + History | 0/TBD | Not started | - |
+| 2. Backup Engine + History | 1/2 | In Progress|  |
 | 3. Automation + Notifications | 0/TBD | Not started | - |
 | 4. Dashboard + Query Executor + Cloud Storage | 0/TBD | Not started | - |

@@ -31,11 +31,11 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Backup Execution
 
 - [ ] **BKUP-01**: 사용자가 수동으로 즉시 백업을 실행할 수 있다
-- [ ] **BKUP-02**: 백업이 네이티브 dump 도구(mysqldump, pg_dump 등)를 사용하여 실행된다
+- [x] **BKUP-02**: 백업이 네이티브 dump 도구(mysqldump, pg_dump 등)를 사용하여 실행된다
 - [ ] **BKUP-03**: 백업 진행 상황이 WebSocket으로 실시간 표시된다
-- [ ] **BKUP-04**: 백업 파일이 서버 로컬 디스크에 저장된다
-- [ ] **BKUP-05**: 동일 연결에 대한 동시 백업이 방지된다 (동시성 제어)
-- [ ] **BKUP-06**: 백업 파일명에 DB명, 날짜, 시간이 포함된다
+- [x] **BKUP-04**: 백업 파일이 서버 로컬 디스크에 저장된다
+- [x] **BKUP-05**: 동일 연결에 대한 동시 백업이 방지된다 (동시성 제어)
+- [x] **BKUP-06**: 백업 파일명에 DB명, 날짜, 시간이 포함된다
 
 ### Scheduled Backup
 
@@ -51,7 +51,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **HIST-01**: 백업 히스토리를 조회할 수 있다 (날짜, 상태, 파일명, 크기, 소요시간)
 - [ ] **HIST-02**: 백업 성공/실패 상세 로그를 조회할 수 있다
 - [ ] **HIST-03**: 백업 파일을 웹에서 다운로드할 수 있다
-- [ ] **HIST-04**: 백업 파일의 SHA-256 해시로 무결성을 검증할 수 있다
+- [x] **HIST-04**: 백업 파일의 SHA-256 해시로 무결성을 검증할 수 있다
 
 ### Dashboard
 
@@ -129,15 +129,15 @@ Deferred to future release.
 | CONN-07 | Phase 1 | Complete |
 | CONN-08 | Phase 1 | Complete |
 | BKUP-01 | Phase 2 | Pending |
-| BKUP-02 | Phase 2 | Pending |
+| BKUP-02 | Phase 2 | Complete |
 | BKUP-03 | Phase 2 | Pending |
-| BKUP-04 | Phase 2 | Pending |
-| BKUP-05 | Phase 2 | Pending |
-| BKUP-06 | Phase 2 | Pending |
+| BKUP-04 | Phase 2 | Complete |
+| BKUP-05 | Phase 2 | Complete |
+| BKUP-06 | Phase 2 | Complete |
 | HIST-01 | Phase 2 | Pending |
 | HIST-02 | Phase 2 | Pending |
 | HIST-03 | Phase 2 | Pending |
-| HIST-04 | Phase 2 | Pending |
+| HIST-04 | Phase 2 | Complete |
 | SCHD-01 | Phase 3 | Pending |
 | SCHD-02 | Phase 3 | Pending |
 | SCHD-03 | Phase 3 | Pending |
