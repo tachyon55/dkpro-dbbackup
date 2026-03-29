@@ -30,9 +30,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Backup Execution
 
-- [ ] **BKUP-01**: 사용자가 수동으로 즉시 백업을 실행할 수 있다
+- [x] **BKUP-01**: 사용자가 수동으로 즉시 백업을 실행할 수 있다
 - [x] **BKUP-02**: 백업이 네이티브 dump 도구(mysqldump, pg_dump 등)를 사용하여 실행된다
-- [ ] **BKUP-03**: 백업 진행 상황이 WebSocket으로 실시간 표시된다
+- [x] **BKUP-03**: 백업 진행 상황이 WebSocket으로 실시간 표시된다
 - [x] **BKUP-04**: 백업 파일이 서버 로컬 디스크에 저장된다
 - [x] **BKUP-05**: 동일 연결에 대한 동시 백업이 방지된다 (동시성 제어)
 - [x] **BKUP-06**: 백업 파일명에 DB명, 날짜, 시간이 포함된다
@@ -128,9 +128,9 @@ Deferred to future release.
 | CONN-06 | Phase 1 | Complete |
 | CONN-07 | Phase 1 | Complete |
 | CONN-08 | Phase 1 | Complete |
-| BKUP-01 | Phase 2 | Pending |
+| BKUP-01 | Phase 2 | Complete |
 | BKUP-02 | Phase 2 | Complete |
-| BKUP-03 | Phase 2 | Pending |
+| BKUP-03 | Phase 2 | Complete |
 | BKUP-04 | Phase 2 | Complete |
 | BKUP-05 | Phase 2 | Complete |
 | BKUP-06 | Phase 2 | Complete |
