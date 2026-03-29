@@ -33,6 +33,15 @@ enum AuditEventType {
   CONN_UPDATE
   CONN_DELETE
   CONN_TEST
+  BACKUP_START
+  BACKUP_COMPLETE
+  BACKUP_FAIL
+}
+
+enum BackupStatus {
+  running
+  success
+  failed
 }
 
 model User {
@@ -105,6 +114,31 @@ model DbConnection {
   color        String   @default("#6366f1")  // hex color from preset palette
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  backupHistories BackupHistory[]
+}
+
+model BackupHistory {
+  id              String        @id @default(cuid())
+  connectionId    String?
+  connectionName  String
+  dbType          DbType
+  status          BackupStatus  @default(running)
+  fileName        String?
+  filePath        String?
+  fileSizeBytes   BigInt?
+  sha256          String?
+  durationMs      Int?
+  fullLog         String?       @db.Text
+  errorMessage    String?
+  startedAt       DateTime      @default(now())
+  completedAt     DateTime?
+
+  connection      DbConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+
+  @@index([connectionId])
+  @@index([status])
+  @@index([startedAt])
 }
 
 model AuditLog {
