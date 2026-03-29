@@ -12,7 +12,7 @@
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Foundation + Auth + Connections** - 보안 아키텍처, 사용자 인증(RBAC), DB 연결 관리 및 암호화 저장 (completed 2026-03-28)
+- [x] **Phase 1: Foundation + Auth + Connections** - 보안 아키텍처, 사용자 인증(RBAC), DB 연결 관리 및 암호화 저장 (completed 2026-03-28)
 - [ ] **Phase 2: Backup Engine + History** - 수동 백업 실행, WebSocket 실시간 진행, 백업 히스토리 및 파일 다운로드
 - [ ] **Phase 3: Automation + Notifications** - 스케줄 백업, 보관 자동 정리, 이메일/Slack 알림
 - [ ] **Phase 4: Dashboard + Query Executor + Cloud Storage** - 대시보드, SQL 쿼리 실행기, S3 클라우드 업로드
@@ -48,7 +48,11 @@ Plans:
   3. 동일 연결에 대한 동시 백업 실행이 차단된다
   4. 백업 히스토리에서 날짜, 상태, 파일명, 크기, 소요시간을 조회할 수 있다
   5. 백업 파일을 웹에서 다운로드하고 SHA-256 해시로 무결성을 검증할 수 있다
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [x] 02-01-PLAN.md — Backup engine foundation (Prisma model, spawn tools, engine)
+- [x] 02-02-PLAN.md — Backup trigger API + SSE stream + UI flow
+- [ ] 02-03-PLAN.md — Backup history API + UI (gap closure: HIST-01, HIST-02, HIST-03)
 **UI hint**: yes
 
 ### Phase 3: Automation + Notifications
@@ -83,7 +87,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth + Connections | 5/4 | Complete   | 2026-03-28 |
-| 2. Backup Engine + History | 1/2 | In Progress|  |
+| 1. Foundation + Auth + Connections | 5/5 | Complete   | 2026-03-28 |
+| 2. Backup Engine + History | 2/3 | In Progress|  |
 | 3. Automation + Notifications | 0/TBD | Not started | - |
 | 4. Dashboard + Query Executor + Cloud Storage | 0/TBD | Not started | - |
