@@ -1,7 +1,82 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { Prisma, BackupStatus } from "@prisma/client"
 import { isBackupRunning, lockBackup } from "@/lib/backup-store"
+
+// ── GET /api/backups — Paginated backup history list with filters ──────────────
+
+export async function GET(request: NextRequest) {
+  const session = await auth()
+
+  if (!session?.user) {
+    return NextResponse.json({ error: "인증이 필요합니다" }, { status: 401 })
+  }
+
+  const { searchParams } = request.nextUrl
+
+  const connectionId = searchParams.get("connectionId") || undefined
+  const statusParam = searchParams.get("status") || undefined
+  const startDate = searchParams.get("startDate") || undefined
+  const endDate = searchParams.get("endDate") || undefined
+  const cursor = searchParams.get("cursor") || undefined
+  const limitParam = searchParams.get("limit")
+  const limit = Math.min(Math.max(parseInt(limitParam ?? "20", 10) || 20, 1), 100)
+
+  const where: Prisma.BackupHistoryWhereInput = {}
+
+  if (connectionId) where.connectionId = connectionId
+
+  if (statusParam) {
+    where.status = statusParam as BackupStatus
+  }
+
+  if (startDate || endDate) {
+    where.startedAt = {}
+    if (startDate) (where.startedAt as Prisma.DateTimeFilter).gte = new Date(startDate)
+    if (endDate) {
+      const end = new Date(endDate)
+      end.setHours(23, 59, 59, 999)
+      ;(where.startedAt as Prisma.DateTimeFilter).lte = end
+    }
+  }
+
+  const items = await prisma.backupHistory.findMany({
+    where,
+    orderBy: { startedAt: "desc" },
+    take: limit + 1,
+    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    select: {
+      id: true,
+      connectionId: true,
+      connectionName: true,
+      dbType: true,
+      status: true,
+      fileName: true,
+      fileSizeBytes: true,
+      durationMs: true,
+      startedAt: true,
+      completedAt: true,
+    },
+  })
+
+  const hasMore = items.length > limit
+  const data = hasMore ? items.slice(0, limit) : items
+  const nextCursor = hasMore ? data[data.length - 1].id : null
+
+  const total = await prisma.backupHistory.count({ where })
+
+  // Serialize BigInt fields — JSON.stringify cannot handle BigInt
+  const serialized = data.map((item) => ({
+    ...item,
+    fileSizeBytes: item.fileSizeBytes?.toString() ?? null,
+  }))
+
+  return NextResponse.json({
+    data: serialized,
+    pagination: { total, nextCursor, hasMore },
+  })
+}
 
 // ── POST /api/backups — Trigger a backup job ─────────────────────────────────
 
