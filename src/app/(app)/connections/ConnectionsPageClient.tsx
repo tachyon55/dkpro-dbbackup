@@ -17,10 +17,18 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ConnectionCard, type Connection } from "@/components/connections/ConnectionCard"
 import { ConnectionModal } from "@/components/connections/ConnectionModal"
 import { ConnectionDetail } from "@/components/connections/ConnectionDetail"
+import { BackupConfirmDialog } from "@/components/backup/BackupConfirmDialog"
+import { BackupProgressModal } from "@/components/backup/BackupProgressModal"
+
+// ── Props ─────────────────────────────────────────────────────────────────────
+
+type Props = {
+  userRole: "admin" | "operator" | "viewer"
+}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function ConnectionsPageClient() {
+export function ConnectionsPageClient({ userRole }: Props) {
   const [connections, setConnections] = useState<Connection[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -37,6 +45,14 @@ export function ConnectionsPageClient() {
   // Detail sheet state
   const [detailConnection, setDetailConnection] = useState<Connection | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
+
+  // Backup flow state
+  const [backingUpConnections, setBackingUpConnections] = useState<Set<string>>(new Set())
+  const [confirmConnection, setConfirmConnection] = useState<Connection | null>(null)
+  const [backupJobId, setBackupJobId] = useState<string | null>(null)
+  const [progressConnection, setProgressConnection] = useState<Connection | null>(null)
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
+  const [progressModalOpen, setProgressModalOpen] = useState(false)
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
 
@@ -111,6 +127,67 @@ export function ConnectionsPageClient() {
     setDetailOpen(true)
   }
 
+  // ── Backup handlers ────────────────────────────────────────────────────────
+
+  function handleBackupRequest(connection: Connection) {
+    setConfirmConnection(connection)
+    setConfirmDialogOpen(true)
+  }
+
+  async function handleBackupConfirm() {
+    if (!confirmConnection) return
+    setConfirmDialogOpen(false)
+
+    try {
+      const res = await fetch("/api/backups", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ connectionId: confirmConnection.id }),
+      })
+      const json = await res.json()
+
+      if (res.status === 409) {
+        toast.error("이미 백업이 실행 중입니다. 완료 후 다시 시도해주세요.")
+        setConfirmConnection(null)
+        return
+      }
+
+      if (!res.ok) {
+        toast.error("백업을 시작할 수 없습니다. 연결 정보를 확인해주세요.")
+        setConfirmConnection(null)
+        return
+      }
+
+      const jobId: string = json.data.jobId
+
+      // Mark connection as backing up
+      setBackingUpConnections((prev) => new Set([...prev, confirmConnection.id]))
+      setBackupJobId(jobId)
+      setProgressConnection(confirmConnection)
+      setProgressModalOpen(true)
+      setConfirmConnection(null)
+    } catch {
+      toast.error("백업을 시작할 수 없습니다. 연결 정보를 확인해주세요.")
+      setConfirmConnection(null)
+    }
+  }
+
+  function handleProgressModalClose(open: boolean) {
+    if (!open) {
+      // Remove from backing-up set when modal closes after complete/fail
+      if (progressConnection) {
+        setBackingUpConnections((prev) => {
+          const next = new Set(prev)
+          next.delete(progressConnection.id)
+          return next
+        })
+      }
+      setProgressModalOpen(false)
+      setBackupJobId(null)
+      setProgressConnection(null)
+    }
+  }
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -128,7 +205,7 @@ export function ConnectionsPageClient() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="rounded-md border h-[140px] bg-neutral-100" />
+            <Skeleton key={i} className="rounded-md border h-[160px] bg-neutral-100" />
           ))}
         </div>
       ) : connections.length === 0 ? (
@@ -152,6 +229,9 @@ export function ConnectionsPageClient() {
               onClick={handleCardClick}
               onEdit={handleEdit}
               onDelete={handleDeleteRequest}
+              onBackup={handleBackupRequest}
+              isBackingUp={backingUpConnections.has(conn.id)}
+              userRole={userRole}
             />
           ))}
         </div>
@@ -196,6 +276,22 @@ export function ConnectionsPageClient() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Backup confirm dialog */}
+      <BackupConfirmDialog
+        open={confirmDialogOpen}
+        onOpenChange={setConfirmDialogOpen}
+        connection={confirmConnection}
+        onConfirm={handleBackupConfirm}
+      />
+
+      {/* Backup progress modal */}
+      <BackupProgressModal
+        open={progressModalOpen}
+        onOpenChange={handleProgressModalClose}
+        connection={progressConnection}
+        jobId={backupJobId}
+      />
     </div>
   )
 }

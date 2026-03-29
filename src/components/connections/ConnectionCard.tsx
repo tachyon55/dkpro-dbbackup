@@ -1,6 +1,6 @@
 "use client"
 
-import { Database, MoreVertical } from "lucide-react"
+import { Database, Loader2, MoreVertical, Play } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -46,11 +46,22 @@ type Props = {
   onEdit: (c: Connection) => void
   onDelete: (c: Connection) => void
   onClick: (c: Connection) => void
+  onBackup: (c: Connection) => void
+  isBackingUp: boolean
+  userRole: "admin" | "operator" | "viewer"
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function ConnectionCard({ connection, onEdit, onDelete, onClick }: Props) {
+export function ConnectionCard({
+  connection,
+  onEdit,
+  onDelete,
+  onClick,
+  onBackup,
+  isBackingUp,
+  userRole,
+}: Props) {
   const hostInfo =
     connection.type === "sqlite"
       ? connection.filePath ?? ""
@@ -60,7 +71,7 @@ export function ConnectionCard({ connection, onEdit, onDelete, onClick }: Props)
 
   return (
     <Card
-      className="h-[140px] relative cursor-pointer hover:shadow-md transition-shadow overflow-hidden"
+      className="h-[160px] relative cursor-pointer hover:shadow-md transition-shadow overflow-hidden"
       style={{ borderLeft: `4px solid ${connection.color}` }}
     >
       {/* Dropdown menu — positioned top-right, stops card click propagation */}
@@ -108,6 +119,33 @@ export function ConnectionCard({ connection, onEdit, onDelete, onClick }: Props)
             <p className="text-xs text-neutral-400 truncate">{hostInfo}</p>
           )}
         </div>
+
+        {/* Backup button — hidden for viewer role */}
+        {userRole !== "viewer" && (
+          <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+            {isBackingUp ? (
+              <Button
+                variant="outline"
+                size="sm"
+                disabled
+                className="h-7 text-xs text-amber-600 cursor-not-allowed"
+              >
+                <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+                백업 중...
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => onBackup(connection)}
+              >
+                <Play className="mr-1.5 h-3 w-3" />
+                백업 실행
+              </Button>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   )

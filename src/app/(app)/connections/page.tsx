@@ -7,5 +7,6 @@ export default async function ConnectionsPage() {
   if (!session?.user) {
     redirect("/login")
   }
-  return <ConnectionsPageClient />
+  const role = (session.user.role ?? "viewer") as "admin" | "operator" | "viewer"
+  return <ConnectionsPageClient userRole={role} />
 }
