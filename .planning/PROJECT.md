@@ -12,23 +12,23 @@
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] 다중 사용자 인증 및 역할/권한 관리 — Validated in Phase 1: Foundation + Auth + Connections
+- [x] 다중 DB 연결 관리 (MySQL, MariaDB, PostgreSQL, SQL Server, Oracle, SQLite) — Validated in Phase 1
+- [x] 연결 생성/수정/삭제/테스트 — Validated in Phase 1
+- [x] AES-256 암호화로 DB 비밀번호 보안 저장 — Validated in Phase 1
+- [x] 즉시 백업 실행 (수동) — Validated in Phase 2: Backup Engine + History
+- [x] 실시간 백업 진행 상황 표시 (SSE) — Validated in Phase 2
+- [x] 백업 히스토리 및 로그 조회 — Validated in Phase 2
+- [x] 백업 파일 서버 로컬 저장 — Validated in Phase 2
 
 ### Active
 
-- [ ] 다중 DB 연결 관리 (MySQL, MariaDB, PostgreSQL, SQL Server, Oracle, SQLite)
-- [ ] 연결 생성/수정/삭제/테스트
 - [ ] 스케줄 기반 자동 백업 (매일 지정 시간)
-- [ ] 즉시 백업 실행 (수동)
-- [ ] 백업 히스토리 및 로그 조회
 - [ ] SQL 쿼리 실행기 (SELECT/DML 지원)
 - [ ] 저장된 쿼리 관리 (CRUD)
-- [ ] 다중 사용자 인증 및 역할/권한 관리
-- [ ] 백업 파일 서버 로컬 저장 + 클라우드 스토리지 업로드 옵션
-- [ ] 실시간 백업 진행 상황 표시 (WebSocket)
+- [ ] 클라우드 스토리지 업로드 옵션
 - [ ] 대시보드 (연결 상태, 최근 백업, 스케줄 요약)
 - [ ] 알림 기능 (이메일/Slack 등 백업 성공/실패 알림)
-- [ ] AES-256 암호화로 DB 비밀번호 보안 저장
 - [ ] 백업 보관 일수 기반 자동 정리
 
 ### Out of Scope
@@ -88,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 — Phase 01 (Foundation + Auth + Connections) complete*
+*Last updated: 2026-03-30 — Phase 02 (Backup Engine + History) complete*
