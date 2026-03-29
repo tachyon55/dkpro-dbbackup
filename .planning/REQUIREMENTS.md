@@ -48,9 +48,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Backup History & Logs
 
-- [ ] **HIST-01**: 백업 히스토리를 조회할 수 있다 (날짜, 상태, 파일명, 크기, 소요시간)
-- [ ] **HIST-02**: 백업 성공/실패 상세 로그를 조회할 수 있다
-- [ ] **HIST-03**: 백업 파일을 웹에서 다운로드할 수 있다
+- [x] **HIST-01**: 백업 히스토리를 조회할 수 있다 (날짜, 상태, 파일명, 크기, 소요시간)
+- [x] **HIST-02**: 백업 성공/실패 상세 로그를 조회할 수 있다
+- [x] **HIST-03**: 백업 파일을 웹에서 다운로드할 수 있다
 - [x] **HIST-04**: 백업 파일의 SHA-256 해시로 무결성을 검증할 수 있다
 
 ### Dashboard
@@ -134,9 +134,9 @@ Deferred to future release.
 | BKUP-04 | Phase 2 | Complete |
 | BKUP-05 | Phase 2 | Complete |
 | BKUP-06 | Phase 2 | Complete |
-| HIST-01 | Phase 2 | Pending |
-| HIST-02 | Phase 2 | Pending |
-| HIST-03 | Phase 2 | Pending |
+| HIST-01 | Phase 2 | Complete |
+| HIST-02 | Phase 2 | Complete |
+| HIST-03 | Phase 2 | Complete |
 | HIST-04 | Phase 2 | Complete |
 | SCHD-01 | Phase 3 | Pending |
 | SCHD-02 | Phase 3 | Pending |

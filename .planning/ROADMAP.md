@@ -52,7 +52,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Backup engine foundation (Prisma model, spawn tools, engine)
 - [x] 02-02-PLAN.md — Backup trigger API + SSE stream + UI flow
-- [ ] 02-03-PLAN.md — Backup history API + UI (gap closure: HIST-01, HIST-02, HIST-03)
+- [x] 02-03-PLAN.md — Backup history API + UI (gap closure: HIST-01, HIST-02, HIST-03)
 **UI hint**: yes
 
 ### Phase 3: Automation + Notifications
