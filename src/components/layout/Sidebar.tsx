@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Database, Users, Shield, ChevronLeft, ChevronRight } from "lucide-react"
+import { Database, Users, Shield, History, ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface NavItem {
@@ -15,6 +15,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: "/connections", label: "연결 관리", icon: Database },
+  { href: "/history", label: "백업 히스토리", icon: History },
   { href: "/users", label: "사용자 관리", icon: Users, adminOnly: true },
   { href: "/audit-logs", label: "감사 로그", icon: Shield, adminOnly: true },
 ]
