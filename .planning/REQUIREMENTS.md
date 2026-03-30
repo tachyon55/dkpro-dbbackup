@@ -39,12 +39,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Scheduled Backup
 
-- [ ] **SCHD-01**: 연결별 백업 스케줄을 설정할 수 있다 (매일 지정 시간)
-- [ ] **SCHD-02**: 스케줄을 활성화/비활성화할 수 있다
-- [ ] **SCHD-03**: 스케줄에 백업 저장 경로를 지정할 수 있다
-- [ ] **SCHD-04**: 보관 일수를 설정하여 오래된 백업이 자동 삭제된다
-- [ ] **SCHD-05**: 보관 정리 시 마지막 성공 백업은 보존된다 (안전 가드)
-- [ ] **SCHD-06**: 서버 재시작 후 중단된 스케줄이 정상 복구된다
+- [x] **SCHD-01**: 연결별 백업 스케줄을 설정할 수 있다 (매일 지정 시간)
+- [x] **SCHD-02**: 스케줄을 활성화/비활성화할 수 있다
+- [x] **SCHD-03**: 스케줄에 백업 저장 경로를 지정할 수 있다
+- [x] **SCHD-04**: 보관 일수를 설정하여 오래된 백업이 자동 삭제된다
+- [x] **SCHD-05**: 보관 정리 시 마지막 성공 백업은 보존된다 (안전 가드)
+- [x] **SCHD-06**: 서버 재시작 후 중단된 스케줄이 정상 복구된다
 
 ### Backup History & Logs
 
@@ -72,10 +72,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Notifications
 
-- [ ] **NOTF-01**: 백업 성공/실패 시 이메일 알림을 보낼 수 있다
-- [ ] **NOTF-02**: 백업 성공/실패 시 Slack 알림을 보낼 수 있다
-- [ ] **NOTF-03**: 알림 채널(이메일/Slack)을 설정할 수 있다
-- [ ] **NOTF-04**: 연결별로 알림 활성화/비활성화할 수 있다
+- [x] **NOTF-01**: 백업 성공/실패 시 이메일 알림을 보낼 수 있다
+- [x] **NOTF-02**: 백업 성공/실패 시 Slack 알림을 보낼 수 있다
+- [x] **NOTF-03**: 알림 채널(이메일/Slack)을 설정할 수 있다
+- [x] **NOTF-04**: 연결별로 알림 활성화/비활성화할 수 있다
 
 ### Cloud Storage
 
@@ -138,16 +138,16 @@ Deferred to future release.
 | HIST-02 | Phase 2 | Complete |
 | HIST-03 | Phase 2 | Complete |
 | HIST-04 | Phase 2 | Complete |
-| SCHD-01 | Phase 3 | Pending |
-| SCHD-02 | Phase 3 | Pending |
-| SCHD-03 | Phase 3 | Pending |
-| SCHD-04 | Phase 3 | Pending |
-| SCHD-05 | Phase 3 | Pending |
-| SCHD-06 | Phase 3 | Pending |
-| NOTF-01 | Phase 3 | Pending |
-| NOTF-02 | Phase 3 | Pending |
-| NOTF-03 | Phase 3 | Pending |
-| NOTF-04 | Phase 3 | Pending |
+| SCHD-01 | Phase 3 | Complete |
+| SCHD-02 | Phase 3 | Complete |
+| SCHD-03 | Phase 3 | Complete |
+| SCHD-04 | Phase 3 | Complete |
+| SCHD-05 | Phase 3 | Complete |
+| SCHD-06 | Phase 3 | Complete |
+| NOTF-01 | Phase 3 | Complete |
+| NOTF-02 | Phase 3 | Complete |
+| NOTF-03 | Phase 3 | Complete |
+| NOTF-04 | Phase 3 | Complete |
 | DASH-01 | Phase 4 | Pending |
 | DASH-02 | Phase 4 | Pending |
 | DASH-03 | Phase 4 | Pending |
