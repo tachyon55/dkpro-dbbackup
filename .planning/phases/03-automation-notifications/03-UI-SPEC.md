@@ -187,14 +187,14 @@ helper: "알림 채널은 설정 > 알림에서 구성합니다"  [ 설정으로
 
 **Footer:**
 - Left: "스케줄 삭제" Button variant="ghost" `text-red-600 hover:text-red-700` (only shown if schedule exists)
-- Right: "취소" Button variant="outline" + "저장" Button variant="default"
+- Right: "취소" Button variant="outline" + "스케줄 저장" Button variant="default"
 
 **Validation:**
 - Hour: 0–23 integer required
 - Minute: 0, 15, 30, or 45 (Select — no free text)
 - Retention days: integer ≥ 1, ≤ 3650
 
-**Delete flow:** clicking "스케줄 삭제" opens shadcn AlertDialog — "스케줄을 삭제하면 자동 백업이 중단됩니다. 계속하시겠습니까?" with "삭제" (destructive) and "취소".
+**Delete flow:** clicking "스케줄 삭제" opens shadcn AlertDialog — "스케줄을 삭제하면 자동 백업이 중단됩니다. 계속하시겠습니까?" with "스케줄 삭제" (destructive) and "취소".
 
 ### 6.3 Settings Page — /settings (D-10, D-11)
 
@@ -209,6 +209,8 @@ Icon: `Settings` from lucide-react.
 **Page layout:** Same page shell as `/users` and `/audit-logs` — `max-w-2xl mx-auto` content area.
 
 **Page heading:** "설정" `text-xl font-semibold text-neutral-900`
+
+**Primary visual anchor:** the active Tabs panel — `TabsContent` Card receives the user's attention first due to its bordered container within the neutral page background.
 
 **Content:** shadcn Tabs with two tabs:
 
@@ -228,7 +230,7 @@ SMTP 서버 설정
   발신자 이메일     [ Input placeholder="noreply@example.com" ]
   수신 이메일       [ Input placeholder="admin@example.com" ]
 
-[ 테스트 메일 발송 ] Button variant="outline"   [ 저장 ] Button variant="default"
+[ 테스트 메일 발송 ] Button variant="outline"   [ 이메일 설정 저장 ] Button variant="default"
 ```
 
 - 비밀번호 field: placeholder "저장된 비밀번호 유지" — empty = keep existing encrypted value (per Pitfall 4 from RESEARCH.md)
@@ -247,7 +249,7 @@ Slack 설정
                  helper: "Slack 앱에서 Incoming Webhook URL을 복사하세요"
   채널            [ Input placeholder="#backups" ]
 
-[ 테스트 메시지 발송 ] Button variant="outline"   [ 저장 ] Button variant="default"
+[ 테스트 메시지 발송 ] Button variant="outline"   [ Slack 설정 저장 ] Button variant="default"
 ```
 
 - Webhook URL: stored encrypted via crypto.ts; field shows empty if already set (not decrypted to client)
@@ -270,8 +272,8 @@ Slack 설정
 
 | State | Visual |
 |-------|--------|
-| Idle | "저장" enabled |
-| Submitting | "저장" disabled, Loader2 icon `animate-spin` prepended |
+| Idle | "스케줄 저장" enabled |
+| Submitting | "스케줄 저장" disabled, Loader2 icon `animate-spin` prepended |
 | Success | Modal closes, sonner toast "스케줄이 저장되었습니다", card updates |
 | Error | Modal stays open, inline error below submit area `text-sm text-red-600` |
 
@@ -279,8 +281,9 @@ Slack 설정
 
 | State | Visual |
 |-------|--------|
-| Idle | "저장" enabled |
-| Submitting | "저장" disabled, Loader2 icon `animate-spin` |
+| Idle (SMTP tab) | "이메일 설정 저장" enabled |
+| Idle (Slack tab) | "Slack 설정 저장" enabled |
+| Submitting | Button disabled, Loader2 icon `animate-spin` |
 | Success | sonner toast |
 | Error | sonner error toast with message |
 
@@ -303,11 +306,12 @@ All UI text in Korean. No emojis in UI text (notifications content is server-sid
 
 | Action | Label |
 |--------|-------|
-| Save schedule | 저장 |
-| Delete schedule | 스케줄 삭제 |
-| Confirm schedule delete | 삭제 |
+| Save schedule | 스케줄 저장 |
+| Delete schedule (footer ghost button) | 스케줄 삭제 |
+| Confirm schedule delete (AlertDialog) | 스케줄 삭제 |
 | Cancel modal | 취소 |
-| Save notification settings | 저장 |
+| Save SMTP notification settings | 이메일 설정 저장 |
+| Save Slack notification settings | Slack 설정 저장 |
 | Send test email | 테스트 메일 발송 |
 | Send test Slack message | 테스트 메시지 발송 |
 | Open schedule modal | (click on schedule row — no button label, cursor-pointer) |
@@ -337,7 +341,7 @@ All UI text in Korean. No emojis in UI text (notifications content is server-sid
 
 | Action | Dialog Title | Dialog Body | Confirm Label | Cancel Label |
 |--------|-------------|-------------|---------------|--------------|
-| Delete schedule | "스케줄 삭제" | "스케줄을 삭제하면 자동 백업이 중단됩니다. 계속하시겠습니까?" | "삭제" | "취소" |
+| Delete schedule | "스케줄 삭제" | "스케줄을 삭제하면 자동 백업이 중단됩니다. 계속하시겠습니까?" | "스케줄 삭제" | "취소" |
 
 Confirm button: Button variant="destructive".
 
@@ -372,7 +376,7 @@ Dialog max-w-md
     [Switch] 이 연결의 백업 결과 알림 받기
   DialogFooter:
     left: [스케줄 삭제 ghost red]
-    right: [취소 outline] [저장 default]
+    right: [취소 outline] [스케줄 저장 default]
 ```
 
 ### Settings Page (/settings)
@@ -385,7 +389,7 @@ Sidebar (existing) | Page content max-w-2xl mx-auto p-6
                        TabsContent:
                          Card p-6
                            form fields (gap-4)
-                           footer: [테스트 발송 outline] [저장 default]
+                           footer: [테스트 발송 outline] [이메일 설정 저장 / Slack 설정 저장 default]
 ```
 
 ---
