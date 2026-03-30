@@ -61,8 +61,8 @@ Switch component height: use shadcn Switch default (h-6 thumb, h-5 track) — do
 ### Specific type contracts
 
 - Schedule time display on card ("다음 실행: 02:30"): `text-xs text-neutral-400`
-- Schedule enabled badge ("활성"): `text-xs font-medium` inside `bg-green-100 text-green-700 rounded px-1.5 py-0.5`
-- Schedule disabled badge ("비활성"): `text-xs font-medium` inside `bg-neutral-100 text-neutral-500 rounded px-1.5 py-0.5`
+- Schedule enabled badge ("활성"): `text-xs font-medium` inside `bg-green-100 text-green-700 rounded px-2 py-1`
+- Schedule disabled badge ("비활성"): `text-xs font-medium` inside `bg-neutral-100 text-neutral-500 rounded px-2 py-1`
 - Settings page section title: `text-sm font-semibold text-neutral-900`
 - Settings form helper text: `text-xs text-neutral-400`
 
@@ -97,10 +97,10 @@ Accent is reserved for these specific elements only:
 
 | State | Background | Text | Usage |
 |-------|-----------|------|-------|
-| Success | `bg-green-100` | `text-green-700` | "활성" badge, notification sent indicator |
+| Success | `bg-green-100` | `text-green-700` | "활성" badge (`px-2 py-1 rounded`), notification sent indicator |
 | Warning | `bg-amber-100` | `text-amber-700` | "백업 중..." button state (existing pattern) |
 | Destructive | `bg-red-50` | `text-red-600` | Delete menu items, error inline messages |
-| Neutral off | `bg-neutral-100` | `text-neutral-500` | "비활성" badge, disabled states |
+| Neutral off | `bg-neutral-100` | `text-neutral-500` | "비활성" badge (`px-2 py-1 rounded`), disabled states |
 
 **Second semantic color (destructive):** used only for schedule delete confirmation and connection delete — existing AlertDialog pattern applies.
 
@@ -147,7 +147,7 @@ The existing `ConnectionCard` (h-[160px]) must grow to accommodate the schedule 
 ```
 
 - Switch: shadcn Switch, `size` default. Label text: "스케줄" `text-xs text-neutral-600 ml-2`
-- Status badge: inline span (not Badge component), `text-xs font-medium px-1.5 py-0.5 rounded` — green if enabled, neutral if disabled
+- Status badge: inline span (not Badge component), `text-xs font-medium px-2 py-1 rounded` — green if enabled, neutral if disabled
 - Next run time: `text-xs text-neutral-400` right-aligned — format: "다음 실행: HH:MM 오늘" or "HH:MM 내일"
 - If no schedule configured yet: show "스케줄 미설정" in `text-xs text-neutral-400` with a configure button `text-xs text-indigo-600 underline`
 - Click on schedule row (not the switch): opens ScheduleModal
@@ -158,6 +158,8 @@ The existing `ConnectionCard` (h-[160px]) must grow to accommodate the schedule 
 ### 6.2 ScheduleModal (D-01, D-02, D-03, D-04, D-05, D-08)
 
 shadcn Dialog, `max-w-md`.
+
+**Primary visual anchor:** DialogTitle — the connection name in the header ("스케줄 설정 — {connection.name}") draws the user's eye before the form fields.
 
 **Header:** "스케줄 설정 — {connection.name}"
 
@@ -187,7 +189,7 @@ helper: "알림 채널은 설정 > 알림에서 구성합니다"  [ 설정으로
 
 **Footer:**
 - Left: "스케줄 삭제" Button variant="ghost" `text-red-600 hover:text-red-700` (only shown if schedule exists)
-- Right: "취소" Button variant="outline" + "스케줄 저장" Button variant="default"
+- Right: "취소" Button variant="outline" (secondary dismiss) + "스케줄 저장" Button variant="default"
 
 **Validation:**
 - Hour: 0–23 integer required
@@ -291,7 +293,8 @@ Slack 설정
 
 | State | Visual |
 |-------|--------|
-| Idle | "테스트 발송" outline button, enabled |
+| Idle (email) | "테스트 메일 발송" outline button, enabled |
+| Idle (Slack) | "테스트 메시지 발송" outline button, enabled |
 | Sending | disabled + Loader2 spin |
 | Success | sonner success toast |
 | Failure | sonner error toast with server error message |
@@ -309,12 +312,18 @@ All UI text in Korean. No emojis in UI text (notifications content is server-sid
 | Save schedule | 스케줄 저장 |
 | Delete schedule (footer ghost button) | 스케줄 삭제 |
 | Confirm schedule delete (AlertDialog) | 스케줄 삭제 |
-| Cancel modal | 취소 |
 | Save SMTP notification settings | 이메일 설정 저장 |
 | Save Slack notification settings | Slack 설정 저장 |
 | Send test email | 테스트 메일 발송 |
 | Send test Slack message | 테스트 메시지 발송 |
 | Open schedule modal | (click on schedule row — no button label, cursor-pointer) |
+
+**Secondary dismiss actions** (not primary CTAs):
+
+| Action | Label |
+|--------|-------|
+| Dismiss modal | 취소 |
+| Dismiss AlertDialog | 취소 |
 
 ### Empty States
 
@@ -389,7 +398,7 @@ Sidebar (existing) | Page content max-w-2xl mx-auto p-6
                        TabsContent:
                          Card p-6
                            form fields (gap-4)
-                           footer: [테스트 발송 outline] [이메일 설정 저장 / Slack 설정 저장 default]
+                           footer: [테스트 메일 발송 / 테스트 메시지 발송 outline] [이메일 설정 저장 / Slack 설정 저장 default]
 ```
 
 ---
