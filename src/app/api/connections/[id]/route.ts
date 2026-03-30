@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { encrypt } from "@/lib/crypto"
 import { updateConnectionSchema } from "@/lib/validations/connection"
 import { createAuditLog } from "@/lib/audit"
+import { stopSchedule } from "@/lib/scheduler"
 
 const CONNECTION_SELECT = {
   id: true,
@@ -144,6 +145,8 @@ export async function DELETE(
   if (!existing) {
     return NextResponse.json({ error: "연결을 찾을 수 없습니다" }, { status: 404 })
   }
+
+  stopSchedule(id) // prevent orphaned cron task (Pitfall 5)
 
   await prisma.dbConnection.delete({ where: { id } })
 
