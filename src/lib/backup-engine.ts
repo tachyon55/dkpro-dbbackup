@@ -28,7 +28,7 @@ type SendFn = (event: string, data: unknown) => void
  * @param historyId - The BackupHistory record id to update during execution
  * @param send      - SSE event emitter: send(eventName, data)
  */
-export async function runBackup(historyId: string, send: SendFn): Promise<void> {
+export async function runBackup(historyId: string, send: SendFn, backupDir?: string): Promise<void> {
   const startTime = Date.now()
 
   // 1. Fetch the BackupHistory record (includes connectionId)
@@ -91,10 +91,10 @@ export async function runBackup(historyId: string, send: SendFn): Promise<void> 
 
   const decryptedConn = { ...conn, password: decryptedPassword }
 
-  // 4. Build output path
-  const backupDir = await getBackupDir(connectionId)
+  // 4. Build output path — use caller-provided dir if given, else derive default
+  const resolvedBackupDir = backupDir ?? await getBackupDir(connectionId)
   const fileName = generateBackupFileName(conn.database ?? conn.name, conn.type)
-  const outputPath = path.join(backupDir, fileName)
+  const outputPath = path.join(resolvedBackupDir, fileName)
 
   // 5. Send started event
   send("started", {

@@ -82,7 +82,6 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
 
   // Determine backup directory — use custom path if configured, else default
   const backupDir = schedule.backupPath ? schedule.backupPath : await getBackupDir(connectionId)
-  void backupDir // stored for future per-connection path overrides; runBackup uses getBackupDir internally
 
   // D-Pitfall-6: Update lastRunAt BEFORE runBackup to prevent duplicate catch-ups on restart
   await prisma.schedule.update({
@@ -106,7 +105,7 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
   const noop = () => {}
 
   try {
-    await runBackup(record.id, noop)
+    await runBackup(record.id, noop, backupDir)
     await createAuditLog({
       event: "SCHEDULE_RUN",
       targetId: connectionId,
