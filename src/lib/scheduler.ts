@@ -112,6 +112,13 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
       targetId: connectionId,
       metadata: { historyId: record.id, status: "success" },
     })
+    const { sendBackupNotification } = await import("@/lib/notifications")
+    const completed = await prisma.backupHistory.findUnique({ where: { id: record.id } })
+    if (completed) {
+      await sendBackupNotification(connectionId, completed).catch((err) =>
+        console.error("[Scheduler] Notification failed:", err)
+      )
+    }
   } catch (err) {
     console.error(`[Scheduler] Backup failed for ${connectionId}:`, err)
     await createAuditLog({
@@ -123,6 +130,11 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
         error: (err as Error).message,
       },
     })
+    const { sendBackupNotification } = await import("@/lib/notifications")
+    const failed = await prisma.backupHistory.findUnique({ where: { id: record.id } })
+    await sendBackupNotification(connectionId, failed, err as Error).catch((notifErr) =>
+      console.error("[Scheduler] Notification failed:", notifErr)
+    )
   } finally {
     // D-06: Cleanup always runs after every scheduled backup regardless of success/failure
     await runRetentionCleanup(connectionId)
