@@ -19,6 +19,7 @@ import { ConnectionModal } from "@/components/connections/ConnectionModal"
 import { ConnectionDetail } from "@/components/connections/ConnectionDetail"
 import { BackupConfirmDialog } from "@/components/backup/BackupConfirmDialog"
 import { BackupProgressModal } from "@/components/backup/BackupProgressModal"
+import { ScheduleModal, type ScheduleData } from "@/components/schedule/ScheduleModal"
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -31,6 +32,9 @@ type Props = {
 export function ConnectionsPageClient({ userRole }: Props) {
   const [connections, setConnections] = useState<Connection[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Schedule state — keyed by connectionId
+  const [schedules, setSchedules] = useState<Record<string, ScheduleData | null>>({})
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false)
@@ -54,6 +58,10 @@ export function ConnectionsPageClient({ userRole }: Props) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const [progressModalOpen, setProgressModalOpen] = useState(false)
 
+  // Schedule modal state
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false)
+  const [scheduleTarget, setScheduleTarget] = useState<Connection | null>(null)
+
   // ── Fetch ──────────────────────────────────────────────────────────────────
 
   async function fetchConnections() {
@@ -73,8 +81,25 @@ export function ConnectionsPageClient({ userRole }: Props) {
     }
   }
 
+  async function fetchSchedules() {
+    try {
+      const res = await fetch("/api/schedules")
+      const json = await res.json()
+      if (!res.ok) return
+      // Build a map keyed by connectionId
+      const map: Record<string, ScheduleData | null> = {}
+      for (const s of json.data as ScheduleData[]) {
+        map[s.connectionId] = s
+      }
+      setSchedules(map)
+    } catch {
+      // Non-critical: silently fail, schedules just won't show
+    }
+  }
+
   useEffect(() => {
     fetchConnections()
+    fetchSchedules()
   }, [])
 
   // ── Handlers ──────────────────────────────────────────────────────────────
@@ -115,6 +140,7 @@ export function ConnectionsPageClient({ userRole }: Props) {
         setDetailConnection(null)
       }
       fetchConnections()
+      fetchSchedules()
     } catch {
       toast.error("서버 연결 오류")
     } finally {
@@ -188,6 +214,46 @@ export function ConnectionsPageClient({ userRole }: Props) {
     }
   }
 
+  // ── Schedule handlers ──────────────────────────────────────────────────────
+
+  function handleScheduleClick(connection: Connection) {
+    setScheduleTarget(connection)
+    setScheduleModalOpen(true)
+  }
+
+  async function handleScheduleToggle(
+    connectionId: string,
+    scheduleId: string,
+    isEnabled: boolean
+  ) {
+    // Optimistic update
+    setSchedules((prev) => ({
+      ...prev,
+      [connectionId]: prev[connectionId] ? { ...prev[connectionId]!, isEnabled } : null,
+    }))
+    try {
+      const res = await fetch(`/api/schedules/${scheduleId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isEnabled }),
+      })
+      if (!res.ok) throw new Error()
+    } catch {
+      // Revert on failure
+      setSchedules((prev) => ({
+        ...prev,
+        [connectionId]: prev[connectionId]
+          ? { ...prev[connectionId]!, isEnabled: !isEnabled }
+          : null,
+      }))
+      toast.error("스케줄 변경에 실패했습니다")
+    }
+  }
+
+  function handleScheduleSaved() {
+    fetchSchedules()
+  }
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -205,7 +271,7 @@ export function ConnectionsPageClient({ userRole }: Props) {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="rounded-md border h-[160px] bg-neutral-100" />
+            <Skeleton key={i} className="rounded-md border h-[200px] bg-neutral-100" />
           ))}
         </div>
       ) : connections.length === 0 ? (
@@ -225,13 +291,15 @@ export function ConnectionsPageClient({ userRole }: Props) {
           {connections.map((conn) => (
             <ConnectionCard
               key={conn.id}
-              connection={conn}
+              connection={{ ...conn, schedule: schedules[conn.id] ?? null }}
               onClick={handleCardClick}
               onEdit={handleEdit}
               onDelete={handleDeleteRequest}
               onBackup={handleBackupRequest}
               isBackingUp={backingUpConnections.has(conn.id)}
               userRole={userRole}
+              onScheduleToggle={handleScheduleToggle}
+              onScheduleClick={handleScheduleClick}
             />
           ))}
         </div>
@@ -291,6 +359,16 @@ export function ConnectionsPageClient({ userRole }: Props) {
         onOpenChange={handleProgressModalClose}
         connection={progressConnection}
         jobId={backupJobId}
+      />
+
+      {/* Schedule modal */}
+      <ScheduleModal
+        open={scheduleModalOpen}
+        onOpenChange={setScheduleModalOpen}
+        connectionId={scheduleTarget?.id ?? ""}
+        connectionName={scheduleTarget?.name ?? ""}
+        schedule={scheduleTarget ? schedules[scheduleTarget.id] ?? null : null}
+        onSaved={handleScheduleSaved}
       />
     </div>
   )

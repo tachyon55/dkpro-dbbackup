@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -26,6 +27,16 @@ export type Connection = {
   color: string
   createdAt: string
   updatedAt: string
+  schedule?: {
+    id: string
+    isEnabled: boolean
+    hour: number
+    minute: number
+    retentionDays: number
+    notificationsEnabled: boolean
+    catchUpOnRestart: boolean
+    backupPath: string | null
+  } | null
 }
 
 // ── DB type display labels ─────────────────────────────────────────────────────
@@ -49,6 +60,19 @@ type Props = {
   onBackup: (c: Connection) => void
   isBackingUp: boolean
   userRole: "admin" | "operator" | "viewer"
+  onScheduleToggle: (connectionId: string, scheduleId: string, isEnabled: boolean) => void
+  onScheduleClick: (connection: Connection) => void
+}
+
+// ── Helper ────────────────────────────────────────────────────────────────────
+
+function getNextRunDisplay(hour: number, minute: number): string {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0)
+  const isToday = today > now
+  const hh = String(hour).padStart(2, "0")
+  const mm = String(minute).padStart(2, "0")
+  return `${hh}:${mm} ${isToday ? "오늘" : "내일"}`
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -61,6 +85,8 @@ export function ConnectionCard({
   onBackup,
   isBackingUp,
   userRole,
+  onScheduleToggle,
+  onScheduleClick,
 }: Props) {
   const hostInfo =
     connection.type === "sqlite"
@@ -71,7 +97,7 @@ export function ConnectionCard({
 
   return (
     <Card
-      className="h-[160px] relative cursor-pointer hover:shadow-md transition-shadow overflow-hidden"
+      className="h-[200px] relative cursor-pointer hover:shadow-md transition-shadow overflow-hidden"
       style={{ borderLeft: `4px solid ${connection.color}` }}
     >
       {/* Dropdown menu — positioned top-right, stops card click propagation */}
@@ -146,6 +172,55 @@ export function ConnectionCard({
             )}
           </div>
         )}
+
+        {/* Schedule row */}
+        <div className="border-t border-neutral-100 pt-2 mt-2 flex items-center justify-between">
+          {connection.schedule ? (
+            <>
+              <div
+                className="flex items-center gap-2 cursor-pointer flex-1"
+                onClick={(e) => { e.stopPropagation(); onScheduleClick(connection) }}
+              >
+                <Switch
+                  checked={connection.schedule.isEnabled}
+                  onCheckedChange={(checked) => {
+                    onScheduleToggle(connection.id, connection.schedule!.id, checked)
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  disabled={userRole === "viewer"}
+                  aria-label="스케줄 활성화/비활성화"
+                />
+                <span className="text-xs text-neutral-600">스케줄</span>
+                {connection.schedule.isEnabled ? (
+                  <span className="text-xs font-medium px-2 py-1 rounded bg-green-100 text-green-700">
+                    활성
+                  </span>
+                ) : (
+                  <span className="text-xs font-medium px-2 py-1 rounded bg-neutral-100 text-neutral-500">
+                    비활성
+                  </span>
+                )}
+              </div>
+              {connection.schedule.isEnabled && (
+                <span className="text-xs text-neutral-400">
+                  다음 실행: {getNextRunDisplay(connection.schedule.hour, connection.schedule.minute)}
+                </span>
+              )}
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-neutral-400">스케줄 미설정</span>
+              {userRole !== "viewer" && (
+                <button
+                  className="text-xs text-indigo-600 underline"
+                  onClick={(e) => { e.stopPropagation(); onScheduleClick(connection) }}
+                >
+                  설정하기
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   )
