@@ -36,6 +36,12 @@ enum AuditEventType {
   BACKUP_START
   BACKUP_COMPLETE
   BACKUP_FAIL
+  SCHEDULE_CREATE
+  SCHEDULE_UPDATE
+  SCHEDULE_DELETE
+  SCHEDULE_RUN
+  NOTIF_SENT
+  NOTIF_FAIL
 }
 
 enum BackupStatus {
@@ -116,6 +122,7 @@ model DbConnection {
   updatedAt    DateTime @updatedAt
 
   backupHistories BackupHistory[]
+  schedule        Schedule?
 }
 
 model BackupHistory {
@@ -155,4 +162,37 @@ model AuditLog {
   @@index([createdAt])    // for 90-day cleanup and date-range queries
   @@index([event])
   @@index([userId])
+}
+
+model Schedule {
+  id                   String       @id @default(cuid())
+  connectionId         String       @unique
+  isEnabled            Boolean      @default(false)
+  hour                 Int          // 0-23 (KST)
+  minute               Int          // 0, 15, 30, or 45
+  backupPath           String?      // null = use getBackupDir() default
+  retentionDays        Int          @default(30)
+  notificationsEnabled Boolean      @default(false)
+  catchUpOnRestart     Boolean      @default(false)
+  lastRunAt            DateTime?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  connection           DbConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+}
+
+model NotificationSettings {
+  id              String   @id @default(cuid())
+  smtpEnabled     Boolean  @default(false)
+  smtpHost        String?
+  smtpPort        Int?     @default(587)
+  smtpUser        String?
+  smtpPassword    String?  // AES-256-GCM encrypted
+  smtpFrom        String?
+  notifyEmail     String?
+  slackEnabled    Boolean  @default(false)
+  slackWebhookUrl String?  // AES-256-GCM encrypted
+  slackChannel    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
