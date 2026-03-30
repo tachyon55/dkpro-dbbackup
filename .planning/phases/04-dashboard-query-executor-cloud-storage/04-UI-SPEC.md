@@ -54,16 +54,16 @@ Exceptions:
 | Role | Size | Weight | Line Height | Tailwind |
 |------|------|--------|-------------|---------|
 | Body | 14px | 400 (regular) | 1.5 | `text-sm` |
-| Label / Caption | 12px | 500 (medium) | 1.4 | `text-xs font-medium` |
 | Section Heading | 16px | 600 (semibold) | 1.4 | `text-base font-semibold` |
-| Page Heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` |
+| Page Heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` — KPI display variant: 24px semibold (`text-2xl font-semibold`) for metric cards only |
 
 Source: Confirmed from `ConnectionCard.tsx` (`text-sm font-semibold`, `text-xs font-medium`), `settings/page.tsx` (`text-xl font-semibold`).
 
 Rules:
+- Exactly 2 weights in use: 400 (body/default) and 600 (semibold — all headings, labels, KPI numbers).
 - All UI text is Korean.
 - Query editor uses `font-mono` (Geist Mono) at 14px — inherited from Monaco Editor defaults.
-- Metric card numbers: `text-2xl font-bold` (24px, 700) — exception for dashboard KPI emphasis only.
+- Labels and captions use `text-sm font-semibold` — reuses the 14px body size at semibold weight; no separate 12px size.
 - Never use more than 4 type sizes on a single page.
 
 ---
@@ -144,7 +144,7 @@ New package (not shadcn):
 
 - 4 metric cards: `grid grid-cols-4 gap-4`
 - Bottom panels: `grid grid-cols-2 gap-4 mt-6`
-- Failure card highlight: when count > 0, card border-left `4px solid #dc2626` (red-600), number in `text-red-600 text-2xl font-bold`
+- Failure card highlight: when count > 0, card border-left `4px solid #dc2626` (red-600), number in `text-red-600 text-2xl font-semibold`
 - Failed rows in connection grid: `bg-red-50` row background
 - Data is fetched server-side (Server Component direct Prisma query — Claude's Discretion decision)
 - Skeleton loading: render `<Skeleton>` for all 4 cards and both panels during hydration
@@ -171,11 +171,11 @@ New package (not shadcn):
 - Execute button: primary `<Button>` with `Play` icon — indigo accent, operator+ only
 - Save button: `<Button variant="outline">` with `Save` icon
 - Saved queries dropdown: `<Select>` populated from user's saved queries
-- Execution time: `text-xs text-neutral-500` displayed after run
+- Execution time: `text-sm text-neutral-500` displayed after run
 - Results tab — SELECT: `<Table>` with scrollable wrapper `max-h-96 overflow-auto`
 - Results tab — DML: plain text `{N}개 행이 영향받았습니다. (실행시간: {ms}ms)` at `text-sm`
 - Results pagination: client-side, show first 500 rows, display `"결과 {total}개 중 500개 표시"` when truncated
-- RBAC enforcement: viewer sees editor but Execute button is hidden; a `<p className="text-xs text-amber-600">` reads `"뷰어 권한으로는 SELECT만 실행할 수 있습니다."` — server also enforces
+- RBAC enforcement: viewer sees editor but Execute button is hidden; a `<p className="text-sm text-amber-600">` reads `"뷰어 권한으로는 SELECT만 실행할 수 있습니다."` — server also enforces
 
 ### /settings (Cloud Storage tab addition)
 
@@ -183,7 +183,7 @@ New package (not shadcn):
 - Cloud Storage tab layout matches notification settings form: `max-w-2xl mx-auto`, `space-y-4` fields
 - Fields: 엔드포인트 URL, 리전, 버킷명, Access Key ID, Secret Access Key (password input)
 - Save button: `<Button>` full-width at bottom of form, label `"저장"`
-- When global S3 not configured and schedule modal is open: `<p className="text-xs text-neutral-400">클라우드 업로드를 사용하려면 먼저 설정에서 S3 정보를 입력하세요.</p>` directly below the disabled toggle
+- When global S3 not configured and schedule modal is open: `<p className="text-sm text-neutral-400">클라우드 업로드를 사용하려면 먼저 설정에서 S3 정보를 입력하세요.</p>` directly below the disabled toggle
 
 ---
 
@@ -259,10 +259,10 @@ Reuse existing badge pattern from Phase 2/3:
 
 | Status | Classes |
 |--------|---------|
-| 성공 | `text-green-700 bg-green-100 font-medium text-xs px-2 py-1 rounded` |
-| 실패 | `text-red-600 bg-red-50 font-medium text-xs px-2 py-1 rounded` |
-| 실행 중 | `text-amber-600 bg-amber-50 font-medium text-xs px-2 py-1 rounded` |
-| 업로드됨 | `text-blue-600 bg-blue-50 font-medium text-xs px-2 py-1 rounded` |
+| 성공 | `text-green-700 bg-green-100 font-semibold text-sm px-2 py-1 rounded` |
+| 실패 | `text-red-600 bg-red-50 font-semibold text-sm px-2 py-1 rounded` |
+| 실행 중 | `text-amber-600 bg-amber-50 font-semibold text-sm px-2 py-1 rounded` |
+| 업로드됨 | `text-blue-600 bg-blue-50 font-semibold text-sm px-2 py-1 rounded` |
 
 ---
 
