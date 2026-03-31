@@ -27,8 +27,8 @@
 - [x] 알림 기능 (이메일/Slack 등 백업 성공/실패 알림) — Validated in Phase 3
 - [x] 백업 보관 일수 기반 자동 정리 — Validated in Phase 3
 - [x] 대시보드 (연결 상태, 최근 백업, 스케줄 요약) — Validated in Phase 4: Dashboard + Foundation
-- [ ] SQL 쿼리 실행기 (SELECT/DML 지원)
-- [ ] 저장된 쿼리 관리 (CRUD)
+- [x] SQL 쿼리 실행기 (SELECT/DML 지원) — Validated in Phase 5: SQL Query Executor
+- [x] 저장된 쿼리 관리 (CRUD) — Validated in Phase 5
 - [ ] 클라우드 스토리지 업로드 옵션
 
 ### Out of Scope
@@ -88,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 — Phase 04 (Dashboard + Foundation) complete — DASH-01–04 verified; SavedQuery + CloudStorageSettings schema in place; SQL query executor and cloud storage UI remain active*
+*Last updated: 2026-04-01
