@@ -12,7 +12,7 @@ export const authConfig: NextAuthConfig = {
 
       // Redirect logged-in users away from login page
       if (isOnLogin) {
-        return isLoggedIn ? Response.redirect(new URL("/connections", nextUrl)) : true
+        return isLoggedIn ? Response.redirect(new URL("/dashboard", nextUrl)) : true
       }
 
       // Unauthenticated users must log in
