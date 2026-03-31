@@ -118,6 +118,41 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
         console.error("[Scheduler] Notification failed:", err)
       )
     }
+
+    // D-01, D-02: S3 upload after successful backup if cloudUpload=true
+    if (schedule.cloudUpload) {
+      const completedRecord = await prisma.backupHistory.findUnique({ where: { id: record.id } })
+      if (completedRecord?.fileName) {
+        const { uploadToS3 } = await import("@/lib/s3-upload")
+        let uploadFailed = false
+        try {
+          console.log(`[Scheduler] S3 업로드 중... (${completedRecord.fileName})`)
+          await uploadToS3(
+            `${backupDir}/${completedRecord.fileName}`,
+            conn.name,
+            completedRecord.fileName
+          )
+          await prisma.backupHistory.update({
+            where: { id: record.id },
+            data: { cloudUploadStatus: "success" },
+          })
+        } catch (uploadErr) {
+          console.error(`[Scheduler] S3 upload failed for ${connectionId}:`, uploadErr)
+          uploadFailed = true
+          await prisma.backupHistory.update({
+            where: { id: record.id },
+            data: { cloudUploadStatus: "failed" },
+          })
+        }
+        // D-06: Re-notify if upload failed
+        if (uploadFailed) {
+          const updatedRecord = await prisma.backupHistory.findUnique({ where: { id: record.id } })
+          await sendBackupNotification(connectionId, updatedRecord, undefined, true).catch((err) =>
+            console.error("[Scheduler] Upload-failure notification failed:", err)
+          )
+        }
+      }
+    }
   } catch (err) {
     console.error(`[Scheduler] Backup failed for ${connectionId}:`, err)
     await createAuditLog({

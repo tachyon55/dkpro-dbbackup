@@ -17,7 +17,11 @@ function escapeHtml(str: string): string {
 
 // ── Email body builder ────────────────────────────────────────────────────────
 
-export function buildEmailBody(history: BackupHistory | null, error?: Error): string {
+export function buildEmailBody(
+  history: BackupHistory | null,
+  error?: Error,
+  uploadFailed?: boolean
+): string {
   const connectionName = escapeHtml(history?.connectionName ?? "알 수 없음")
   const errorMessage = escapeHtml(error?.message ?? history?.errorMessage ?? "알 수 없는 오류")
   const isSuccess = history?.status === "success"
@@ -42,18 +46,26 @@ export function buildEmailBody(history: BackupHistory | null, error?: Error): st
   const sec =
     history?.durationMs != null ? (history.durationMs / 1000).toFixed(1) : "-"
 
+  const uploadWarning = uploadFailed
+    ? "\n<p><strong>⚠️ S3 업로드에 실패했습니다</strong></p>"
+    : ""
+
   return `
 <h2>백업 성공</h2>
 <p><strong>연결명:</strong> ${connectionName}</p>
 <p><strong>파일:</strong> ${fileName}</p>
 <p><strong>크기:</strong> ${mb} MB</p>
-<p><strong>소요시간:</strong> ${sec}초</p>
+<p><strong>소요시간:</strong> ${sec}초</p>${uploadWarning}
 `.trim()
 }
 
 // ── Slack message builder ─────────────────────────────────────────────────────
 
-export function buildSlackMessage(history: BackupHistory | null, error?: Error): string {
+export function buildSlackMessage(
+  history: BackupHistory | null,
+  error?: Error,
+  uploadFailed?: boolean
+): string {
   const connectionName = history?.connectionName ?? "알 수 없음"
   const isSuccess = history?.status === "success"
 
@@ -69,7 +81,9 @@ export function buildSlackMessage(history: BackupHistory | null, error?: Error):
   const sec =
     history?.durationMs != null ? (history.durationMs / 1000).toFixed(1) : "-"
 
-  return `백업 성공: ${connectionName} (${mb}MB, ${sec}초)`
+  const uploadSuffix = uploadFailed ? " ⚠️ S3 업로드에 실패했습니다" : ""
+
+  return `백업 성공: ${connectionName} (${mb}MB, ${sec}초)${uploadSuffix}`
 }
 
 // ── Internal send helpers ─────────────────────────────────────────────────────
@@ -155,7 +169,8 @@ export async function sendTestSlack(webhookUrl: string, channel?: string): Promi
 export async function sendBackupNotification(
   connectionId: string,
   history: BackupHistory | null,
-  error?: Error
+  error?: Error,
+  uploadFailed?: boolean  // D-06: append "(S3 업로드 실패)" to subject/message if true
 ): Promise<void> {
   // Check per-connection notification flag (NOTF-04)
   const schedule = await prisma.schedule.findUnique({ where: { connectionId } })
@@ -166,12 +181,13 @@ export async function sendBackupNotification(
   if (!settings) return
 
   const status = history?.status === "success" ? "성공" : "실패"
-  const subject = `[DB Backup] ${history?.connectionName ?? connectionId} 백업 ${status}`
+  const uploadSuffix = uploadFailed ? " (S3 업로드 실패)" : ""
+  const subject = `[DB Backup] ${history?.connectionName ?? connectionId} 백업 ${status}${uploadSuffix}`
 
   // Send email if configured
   if (settings.smtpEnabled && settings.smtpHost && settings.notifyEmail) {
     try {
-      await sendEmail(settings, subject, buildEmailBody(history, error))
+      await sendEmail(settings, subject, buildEmailBody(history, error, uploadFailed))
       await createAuditLog({
         event: "NOTIF_SENT",
         targetId: connectionId,
@@ -190,7 +206,7 @@ export async function sendBackupNotification(
   // Send Slack if configured
   if (settings.slackEnabled && settings.slackWebhookUrl) {
     try {
-      await sendSlack(settings, buildSlackMessage(history, error))
+      await sendSlack(settings, buildSlackMessage(history, error, uploadFailed))
       await createAuditLog({
         event: "NOTIF_SENT",
         targetId: connectionId,
