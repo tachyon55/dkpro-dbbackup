@@ -93,7 +93,10 @@ Plans:
   2. viewer는 SELECT만, operator/admin은 DML을 실행할 수 있다
   3. 자주 사용하는 쿼리를 저장하고 목록에서 불러와 재실행할 수 있다
   4. 저장된 쿼리를 수정하거나 삭제할 수 있다
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — Backend: executeQuery abstraction + API routes (execute, saved CRUD)
+- [ ] 05-02-PLAN.md — Frontend: Query page UI (Monaco editor, result table, saved queries)
 **UI hint**: yes
 
 ### Phase 6: Cloud Storage Upload
@@ -120,5 +123,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Backup Engine + History | 3/3 | Complete | 2026-03-29 |
 | 3. Automation + Notifications | 4/4 | Complete | 2026-03-30 |
 | 4. Dashboard + Foundation | 2/2 | Complete | 2026-03-31 |
-| 5. SQL Query Executor | 0/TBD | Not started | — |
+| 5. SQL Query Executor | 0/2 | Not started | — |
 | 6. Cloud Storage Upload | 0/TBD | Not started | — |
