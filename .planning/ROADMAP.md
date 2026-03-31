@@ -95,7 +95,7 @@ Plans:
   4. 저장된 쿼리를 수정하거나 삭제할 수 있다
 **Plans**: 2 plans
 Plans:
-- [ ] 05-01-PLAN.md — Backend: executeQuery abstraction + API routes (execute, saved CRUD)
+- [x] 05-01-PLAN.md — Backend: executeQuery abstraction + API routes (execute, saved CRUD)
 - [ ] 05-02-PLAN.md — Frontend: Query page UI (Monaco editor, result table, saved queries)
 **UI hint**: yes
 

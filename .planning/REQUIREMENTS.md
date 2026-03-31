@@ -62,13 +62,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### SQL Query Executor
 
-- [ ] **QURY-01**: 사용자가 연결을 선택하고 SQL을 실행할 수 있다
-- [ ] **QURY-02**: SELECT 결과가 테이블 형태로 표시된다
-- [ ] **QURY-03**: DML(INSERT/UPDATE/DELETE) 실행 시 영향받은 행 수가 표시된다
-- [ ] **QURY-04**: 역할에 따라 실행 가능한 SQL 타입이 제한된다 (viewer: SELECT만)
-- [ ] **QURY-05**: 쿼리 실행 시간이 표시된다
-- [ ] **QURY-06**: 자주 사용하는 SQL을 저장하고 불러올 수 있다
-- [ ] **QURY-07**: 저장된 쿼리를 수정/삭제할 수 있다
+- [x] **QURY-01**: 사용자가 연결을 선택하고 SQL을 실행할 수 있다
+- [x] **QURY-02**: SELECT 결과가 테이블 형태로 표시된다
+- [x] **QURY-03**: DML(INSERT/UPDATE/DELETE) 실행 시 영향받은 행 수가 표시된다
+- [x] **QURY-04**: 역할에 따라 실행 가능한 SQL 타입이 제한된다 (viewer: SELECT만)
+- [x] **QURY-05**: 쿼리 실행 시간이 표시된다
+- [x] **QURY-06**: 자주 사용하는 SQL을 저장하고 불러올 수 있다
+- [x] **QURY-07**: 저장된 쿼리를 수정/삭제할 수 있다
 
 ### Notifications
 
@@ -152,13 +152,13 @@ Deferred to future release.
 | DASH-02 | Phase 4 | Complete |
 | DASH-03 | Phase 4 | Complete |
 | DASH-04 | Phase 4 | Complete |
-| QURY-01 | Phase 5 | Pending |
-| QURY-02 | Phase 5 | Pending |
-| QURY-03 | Phase 5 | Pending |
-| QURY-04 | Phase 5 | Pending |
-| QURY-05 | Phase 5 | Pending |
-| QURY-06 | Phase 5 | Pending |
-| QURY-07 | Phase 5 | Pending |
+| QURY-01 | Phase 5 | Complete |
+| QURY-02 | Phase 5 | Complete |
+| QURY-03 | Phase 5 | Complete |
+| QURY-04 | Phase 5 | Complete |
+| QURY-05 | Phase 5 | Complete |
+| QURY-06 | Phase 5 | Complete |
+| QURY-07 | Phase 5 | Complete |
 | CLOD-01 | Phase 6 | Pending |
 | CLOD-02 | Phase 6 | Pending |
 | CLOD-03 | Phase 6 | Pending |
