@@ -96,7 +96,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 05-01-PLAN.md — Backend: executeQuery abstraction + API routes (execute, saved CRUD)
-- [ ] 05-02-PLAN.md — Frontend: Query page UI (Monaco editor, result table, saved queries)
+- [x] 05-02-PLAN.md — Frontend: Query page UI (Monaco editor, result table, saved queries)
 **UI hint**: yes
 
 ### Phase 6: Cloud Storage Upload
