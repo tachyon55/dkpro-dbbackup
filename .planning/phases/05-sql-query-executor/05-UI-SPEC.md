@@ -1,9 +1,10 @@
 ---
-status: draft
+status: approved
 phase: 05
 phase_name: SQL Query Executor
 design_system: shadcn/ui new-york — neutral base — cssVariables
 created: 2026-03-31
+reviewed_at: 2026-03-31
 ---
 
 # UI-SPEC — Phase 05: SQL Query Executor
