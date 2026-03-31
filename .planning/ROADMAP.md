@@ -13,9 +13,11 @@
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation + Auth + Connections** - 보안 아키텍처, 사용자 인증(RBAC), DB 연결 관리 및 암호화 저장 (completed 2026-03-28)
-- [ ] **Phase 2: Backup Engine + History** - 수동 백업 실행, WebSocket 실시간 진행, 백업 히스토리 및 파일 다운로드
+- [x] **Phase 2: Backup Engine + History** - 수동 백업 실행, WebSocket 실시간 진행, 백업 히스토리 및 파일 다운로드 (completed 2026-03-29)
 - [x] **Phase 3: Automation + Notifications** - 스케줄 백업, 보관 자동 정리, 이메일/Slack 알림 (completed 2026-03-30)
-- [ ] **Phase 4: Dashboard + Query Executor + Cloud Storage** - 대시보드, SQL 쿼리 실행기, S3 클라우드 업로드
+- [x] **Phase 4: Dashboard + Foundation** - 대시보드, Prisma 스키마 확장(SavedQuery/CloudStorage), 사이드바 업데이트 (completed 2026-03-31)
+- [ ] **Phase 5: SQL Query Executor** - SQL 쿼리 실행기, 결과 테이블 표시, 역할 기반 제한, 저장된 쿼리 관리
+- [ ] **Phase 6: Cloud Storage Upload** - S3 업로드 엔진, 클라우드 설정 UI, 스케줄별 업로드 toggle, 멀티파트 업로드
 
 ## Phase Details
 
@@ -67,27 +69,56 @@ Plans:
   5. 알림 채널을 설정하고 연결별로 알림을 활성화/비활성화할 수 있다
 **Plans**: TBD
 
-### Phase 4: Dashboard + Query Executor + Cloud Storage
-**Goal**: 전체 현황을 한눈에 파악하고, SQL을 직접 실행하며, 백업을 클라우드에 업로드할 수 있다
+### Phase 4: Dashboard + Foundation
+**Goal**: 전체 현황을 한눈에 파악하는 대시보드를 구축하고 쿼리/클라우드 기능의 스키마 기반을 마련한다
 **Depends on**: Phase 3
-**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, QURY-01, QURY-02, QURY-03, QURY-04, QURY-05, QURY-06, QURY-07, CLOD-01, CLOD-02, CLOD-03, CLOD-04
+**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, QURY-06 (schema), CLOD-02 (schema), CLOD-03 (schema)
 **Success Criteria** (what must be TRUE):
   1. 대시보드에서 모든 연결 상태, 최근 백업 결과, 다음 스케줄, 경고를 한눈에 볼 수 있다
-  2. 연결을 선택하고 SQL을 실행하면 SELECT 결과는 테이블로, DML은 영향 행 수와 실행시간으로 표시된다
-  3. viewer는 SELECT만, operator는 DML, admin은 모든 SQL을 실행할 수 있다
-  4. 자주 사용하는 쿼리를 저장/수정/삭제하고 불러올 수 있다
-  5. 백업 파일이 S3 호환 스토리지에 업로드되고 스케줄별로 클라우드 업로드를 켜고 끌 수 있다
+  2. SavedQuery, CloudStorageSettings Prisma 모델이 마이그레이션과 함께 생성되어 있다
+  3. 로그인 후 기본 리다이렉트가 /dashboard로 설정된다
+**Plans**: 2 plans
+Plans:
+- [x] 04-01-PLAN.md — Schema migration + npm packages + sidebar nav
+- [x] 04-02-PLAN.md — Dashboard page with metric cards + connection grid
+**Completed**: 2026-03-31
+
+### Phase 5: SQL Query Executor
+**Goal**: 사용자가 연결을 선택하고 SQL을 실행하며 저장된 쿼리를 관리할 수 있다
+**Depends on**: Phase 4
+**Requirements**: QURY-01, QURY-02, QURY-03, QURY-04, QURY-05, QURY-06, QURY-07
+**Gap Closure**: Closes gaps from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. 연결을 선택하고 SQL을 입력하여 실행하면 SELECT 결과가 테이블로, DML은 영향 행 수와 실행시간으로 표시된다
+  2. viewer는 SELECT만, operator/admin은 DML을 실행할 수 있다
+  3. 자주 사용하는 쿼리를 저장하고 목록에서 불러와 재실행할 수 있다
+  4. 저장된 쿼리를 수정하거나 삭제할 수 있다
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 6: Cloud Storage Upload
+**Goal**: 백업 파일을 S3 호환 스토리지에 업로드하고 스케줄별로 업로드를 제어할 수 있다
+**Depends on**: Phase 4
+**Requirements**: CLOD-01, CLOD-02, CLOD-03, CLOD-04
+**Gap Closure**: Closes gaps from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. 클라우드 스토리지 연결 정보(엔드포인트, 리전, 버킷, 키)를 설정하고 저장할 수 있다
+  2. 스케줄별로 클라우드 업로드를 켜고 끌 수 있다
+  3. 스케줄 백업 완료 후 cloudUpload=true인 경우 S3 호환 스토리지에 자동 업로드된다
+  4. 대용량 파일은 멀티파트 업로드로 처리된다
 **Plans**: TBD
 **UI hint**: yes
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth + Connections | 5/5 | Complete   | 2026-03-28 |
-| 2. Backup Engine + History | 2/3 | In Progress|  |
-| 3. Automation + Notifications | 3/3 | Complete   | 2026-03-30 |
-| 4. Dashboard + Query Executor + Cloud Storage | 1/2 | In Progress|  |
+| 1. Foundation + Auth + Connections | 5/5 | Complete | 2026-03-28 |
+| 2. Backup Engine + History | 3/3 | Complete | 2026-03-29 |
+| 3. Automation + Notifications | 4/4 | Complete | 2026-03-30 |
+| 4. Dashboard + Foundation | 2/2 | Complete | 2026-03-31 |
+| 5. SQL Query Executor | 0/TBD | Not started | — |
+| 6. Cloud Storage Upload | 0/TBD | Not started | — |
