@@ -67,7 +67,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **QURY-03**: DML(INSERT/UPDATE/DELETE) 실행 시 영향받은 행 수가 표시된다
 - [ ] **QURY-04**: 역할에 따라 실행 가능한 SQL 타입이 제한된다 (viewer: SELECT만)
 - [ ] **QURY-05**: 쿼리 실행 시간이 표시된다
-- [ ] **QURY-06**: 자주 사용하는 SQL을 저장하고 불러올 수 있다
+- [x] **QURY-06**: 자주 사용하는 SQL을 저장하고 불러올 수 있다
 - [ ] **QURY-07**: 저장된 쿼리를 수정/삭제할 수 있다
 
 ### Notifications
@@ -80,8 +80,8 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Cloud Storage
 
 - [ ] **CLOD-01**: 백업 파일을 S3 호환 클라우드 스토리지에 업로드할 수 있다
-- [ ] **CLOD-02**: 클라우드 스토리지 연결 정보를 설정할 수 있다
-- [ ] **CLOD-03**: 스케줄별로 클라우드 업로드 활성화/비활성화할 수 있다
+- [x] **CLOD-02**: 클라우드 스토리지 연결 정보를 설정할 수 있다
+- [x] **CLOD-03**: 스케줄별로 클라우드 업로드 활성화/비활성화할 수 있다
 - [ ] **CLOD-04**: 대용량 파일은 멀티파트 업로드로 처리된다
 
 ## v2 Requirements
@@ -157,11 +157,11 @@ Deferred to future release.
 | QURY-03 | Phase 4 | Pending |
 | QURY-04 | Phase 4 | Pending |
 | QURY-05 | Phase 4 | Pending |
-| QURY-06 | Phase 4 | Pending |
+| QURY-06 | Phase 4 | Complete |
 | QURY-07 | Phase 4 | Pending |
 | CLOD-01 | Phase 4 | Pending |
-| CLOD-02 | Phase 4 | Pending |
-| CLOD-03 | Phase 4 | Pending |
+| CLOD-02 | Phase 4 | Complete |
+| CLOD-03 | Phase 4 | Complete |
 | CLOD-04 | Phase 4 | Pending |
 
 **Coverage:**
