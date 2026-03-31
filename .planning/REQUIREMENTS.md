@@ -55,10 +55,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Dashboard
 
-- [ ] **DASH-01**: 전체 연결 상태를 한눈에 볼 수 있다
-- [ ] **DASH-02**: 최근 백업 결과(성공/실패)를 요약하여 보여준다
-- [ ] **DASH-03**: 다음 예정된 스케줄 백업을 표시한다
-- [ ] **DASH-04**: 백업 실패 또는 오래된 백업에 대한 경고를 표시한다
+- [x] **DASH-01**: 전체 연결 상태를 한눈에 볼 수 있다
+- [x] **DASH-02**: 최근 백업 결과(성공/실패)를 요약하여 보여준다
+- [x] **DASH-03**: 다음 예정된 스케줄 백업을 표시한다
+- [x] **DASH-04**: 백업 실패 또는 오래된 백업에 대한 경고를 표시한다
 
 ### SQL Query Executor
 
@@ -148,10 +148,10 @@ Deferred to future release.
 | NOTF-02 | Phase 3 | Complete |
 | NOTF-03 | Phase 3 | Complete |
 | NOTF-04 | Phase 3 | Complete |
-| DASH-01 | Phase 4 | Pending |
-| DASH-02 | Phase 4 | Pending |
-| DASH-03 | Phase 4 | Pending |
-| DASH-04 | Phase 4 | Pending |
+| DASH-01 | Phase 4 | Complete |
+| DASH-02 | Phase 4 | Complete |
+| DASH-03 | Phase 4 | Complete |
+| DASH-04 | Phase 4 | Complete |
 | QURY-01 | Phase 4 | Pending |
 | QURY-02 | Phase 4 | Pending |
 | QURY-03 | Phase 4 | Pending |
