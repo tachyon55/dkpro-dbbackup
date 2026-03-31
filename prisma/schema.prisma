@@ -65,6 +65,7 @@ model User {
   updatedAt            DateTime  @updatedAt
 
   auditLogs            AuditLog[]
+  savedQueries         SavedQuery[]
 
   // NextAuth required fields (for PrismaAdapter + future OAuth)
   accounts             Account[]
@@ -137,11 +138,12 @@ model BackupHistory {
   sha256          String?
   durationMs      Int?
   fullLog         String?       @db.Text
-  errorMessage    String?
-  startedAt       DateTime      @default(now())
-  completedAt     DateTime?
+  errorMessage      String?
+  cloudUploadStatus String?       // null=not attempted, "success", "failed", "skipped"
+  startedAt         DateTime      @default(now())
+  completedAt       DateTime?
 
-  connection      DbConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+  connection        DbConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
 
   @@index([connectionId])
   @@index([status])
@@ -174,6 +176,7 @@ model Schedule {
   retentionDays        Int          @default(30)
   notificationsEnabled Boolean      @default(false)
   catchUpOnRestart     Boolean      @default(false)
+  cloudUpload          Boolean      @default(false)
   lastRunAt            DateTime?
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
@@ -193,6 +196,31 @@ model NotificationSettings {
   slackEnabled    Boolean  @default(false)
   slackWebhookUrl String?  // AES-256-GCM encrypted
   slackChannel    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SavedQuery {
+  id           String   @id @default(cuid())
+  userId       String
+  connectionId String?
+  name         String
+  sql          String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model CloudStorageSettings {
+  id              String   @id @default(cuid())
+  endpoint        String?
+  region          String?
+  bucket          String?
+  accessKeyId     String?
+  secretAccessKey String?  // AES-256-GCM encrypted
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
