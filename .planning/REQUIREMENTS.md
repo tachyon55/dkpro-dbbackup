@@ -79,10 +79,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Cloud Storage
 
-- [ ] **CLOD-01**: 백업 파일을 S3 호환 클라우드 스토리지에 업로드할 수 있다
-- [ ] **CLOD-02**: 클라우드 스토리지 연결 정보를 설정할 수 있다
+- [x] **CLOD-01**: 백업 파일을 S3 호환 클라우드 스토리지에 업로드할 수 있다
+- [x] **CLOD-02**: 클라우드 스토리지 연결 정보를 설정할 수 있다
 - [ ] **CLOD-03**: 스케줄별로 클라우드 업로드 활성화/비활성화할 수 있다
-- [ ] **CLOD-04**: 대용량 파일은 멀티파트 업로드로 처리된다
+- [x] **CLOD-04**: 대용량 파일은 멀티파트 업로드로 처리된다
 
 ## v2 Requirements
 
@@ -159,10 +159,10 @@ Deferred to future release.
 | QURY-05 | Phase 5 | Complete |
 | QURY-06 | Phase 5 | Complete |
 | QURY-07 | Phase 5 | Complete |
-| CLOD-01 | Phase 6 | Pending |
-| CLOD-02 | Phase 6 | Pending |
+| CLOD-01 | Phase 6 | Complete |
+| CLOD-02 | Phase 6 | Complete |
 | CLOD-03 | Phase 6 | Pending |
-| CLOD-04 | Phase 6 | Pending |
+| CLOD-04 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 50 total (AUTH×7, CONN×8, BKUP×6, SCHD×6, HIST×4, DASH×4, QURY×7, NOTF×4, CLOD×4)

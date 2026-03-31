@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-sql-query-executor 05-02-PLAN.md
-last_updated: "2026-03-31T22:03:38.847Z"
+stopped_at: Completed 06-cloud-storage-upload 06-01-PLAN.md
+last_updated: "2026-03-31T22:51:49.300Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 6
-  completed_phases: 5
-  total_plans: 16
-  completed_plans: 16
+  completed_phases: 4
+  total_plans: 10
+  completed_plans: 17
   percent: 8
 ---
 
@@ -65,6 +65,7 @@ Progress: [█░░░░░░░░░] 8%
 | Phase 04-dashboard-query-executor-cloud-storage P01 | 10 | 2 tasks | 6 files |
 | Phase 04 P02 | 15 | 2 tasks | 5 files |
 | Phase 05-sql-query-executor P02 | 5 | 2 tasks | 7 files |
+| Phase 06-cloud-storage-upload P01 | 149 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,9 @@ Recent decisions affecting current work:
 - [Phase 04]: Login redirect updated in auth.config.ts and app/page.tsx — /dashboard is the new default landing page
 - [Phase 05-sql-query-executor]: Monaco dynamic import with ssr:false prevents server-side render errors
 - [Phase 05-sql-query-executor]: DDL warning shown for operator/admin only — viewers see server 403 in error block
+- [Phase 06-cloud-storage-upload]: uploadToS3 uses @aws-sdk/lib-storage Upload (not putObject) for multipart support on large backup files
+- [Phase 06-cloud-storage-upload]: secretAccessKey masked as __masked__ in GET — never return encrypted value to client
+- [Phase 06-cloud-storage-upload]: S3 upload failure does not abort backup record — cloudUploadStatus updated independently, upload-failure re-notification uses uploadFailed=true param
 
 ### Pending Todos
 
@@ -117,6 +121,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T21:59:04.644Z
-Stopped at: Completed 05-sql-query-executor 05-02-PLAN.md
+Last session: 2026-03-31T22:51:43.525Z
+Stopped at: Completed 06-cloud-storage-upload 06-01-PLAN.md
 Resume file: None

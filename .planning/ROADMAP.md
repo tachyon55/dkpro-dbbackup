@@ -68,7 +68,7 @@ Plans:
   4. 백업 성공/실패 시 이메일 또는 Slack으로 알림이 전송된다
   5. 알림 채널을 설정하고 연결별로 알림을 활성화/비활성화할 수 있다
 **Plans**: 2 plans
-- [ ] 06-01-PLAN.md — S3 업로드 엔진 + 설정 API + 스케줄러 통합
+- [x] 06-01-PLAN.md — S3 업로드 엔진 + 설정 API + 스케줄러 통합
 - [ ] 06-02-PLAN.md — 설정 UI (탭) + 스케줄 토글 + 히스토리 아이콘
 
 ### Phase 4: Dashboard + Foundation
@@ -128,4 +128,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Automation + Notifications | 4/4 | Complete | 2026-03-30 |
 | 4. Dashboard + Foundation | 2/2 | Complete | 2026-03-31 |
 | 5. SQL Query Executor | 0/2 | Not started | — |
-| 6. Cloud Storage Upload | 0/TBD | Not started | — |
+| 6. Cloud Storage Upload | 1/2 | In Progress|  |
