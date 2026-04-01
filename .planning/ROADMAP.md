@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Automation + Notifications** - 스케줄 백업, 보관 자동 정리, 이메일/Slack 알림 (completed 2026-03-30)
 - [x] **Phase 4: Dashboard + Foundation** - 대시보드, Prisma 스키마 확장(SavedQuery/CloudStorage), 사이드바 업데이트 (completed 2026-03-31)
 - [ ] **Phase 5: SQL Query Executor** - SQL 쿼리 실행기, 결과 테이블 표시, 역할 기반 제한, 저장된 쿼리 관리
-- [ ] **Phase 6: Cloud Storage Upload** - S3 업로드 엔진, 클라우드 설정 UI, 스케줄별 업로드 toggle, 멀티파트 업로드
+- [x] **Phase 6: Cloud Storage Upload** - S3 업로드 엔진, 클라우드 설정 UI, 스케줄별 업로드 toggle, 멀티파트 업로드 (completed 2026-04-01)
 
 ## Phase Details
 
@@ -69,7 +69,7 @@ Plans:
   5. 알림 채널을 설정하고 연결별로 알림을 활성화/비활성화할 수 있다
 **Plans**: 2 plans
 - [x] 06-01-PLAN.md — S3 업로드 엔진 + 설정 API + 스케줄러 통합
-- [ ] 06-02-PLAN.md — 설정 UI (탭) + 스케줄 토글 + 히스토리 아이콘
+- [x] 06-02-PLAN.md — 설정 UI (탭) + 스케줄 토글 + 히스토리 아이콘
 
 ### Phase 4: Dashboard + Foundation
 **Goal**: 전체 현황을 한눈에 파악하는 대시보드를 구축하고 쿼리/클라우드 기능의 스키마 기반을 마련한다
@@ -112,7 +112,7 @@ Plans:
   3. 스케줄 백업 완료 후 cloudUpload=true인 경우 S3 호환 스토리지에 자동 업로드된다
   4. 대용량 파일은 멀티파트 업로드로 처리된다
 **Plans**: 2 plans
-- [ ] 06-01-PLAN.md — S3 업로드 엔진 + 설정 API + 스케줄러 통합
+- [x] 06-01-PLAN.md — S3 업로드 엔진 + 설정 API + 스케줄러 통합
 - [ ] 06-02-PLAN.md — 설정 UI (탭) + 스케줄 토글 + 히스토리 아이콘
 **UI hint**: yes
 
@@ -128,4 +128,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Automation + Notifications | 4/4 | Complete | 2026-03-30 |
 | 4. Dashboard + Foundation | 2/2 | Complete | 2026-03-31 |
 | 5. SQL Query Executor | 0/2 | Not started | — |
-| 6. Cloud Storage Upload | 1/2 | In Progress|  |
+| 6. Cloud Storage Upload | 2/2 | Complete   | 2026-04-01 |
