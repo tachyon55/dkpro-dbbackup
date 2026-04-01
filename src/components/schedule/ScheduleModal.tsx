@@ -44,6 +44,7 @@ export type ScheduleData = {
   retentionDays: number
   notificationsEnabled: boolean
   catchUpOnRestart: boolean
+  cloudUpload: boolean
 }
 
 type Props = {
@@ -71,6 +72,8 @@ export function ScheduleModal({
   const [retentionDays, setRetentionDays] = useState(30)
   const [catchUpOnRestart, setCatchUpOnRestart] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false)
+  const [cloudUpload, setCloudUpload] = useState(false)
+  const [cloudStorageConfigured, setCloudStorageConfigured] = useState(false)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -85,6 +88,7 @@ export function ScheduleModal({
         setRetentionDays(schedule.retentionDays)
         setCatchUpOnRestart(schedule.catchUpOnRestart)
         setNotificationsEnabled(schedule.notificationsEnabled)
+        setCloudUpload(schedule.cloudUpload ?? false)
       } else {
         setHour(2)
         setMinute(0)
@@ -92,7 +96,16 @@ export function ScheduleModal({
         setRetentionDays(30)
         setCatchUpOnRestart(false)
         setNotificationsEnabled(false)
+        setCloudUpload(false)
       }
+
+      // Check if cloud storage is configured to control toggle availability
+      fetch("/api/cloud-storage/settings")
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setCloudStorageConfigured(!!(data?.bucket && data?.accessKeyId && data?.secretAccessKey))
+        })
+        .catch(() => {})
     }
   }, [open, schedule])
 
@@ -110,6 +123,7 @@ export function ScheduleModal({
         notificationsEnabled,
         catchUpOnRestart,
         isEnabled: schedule ? schedule.isEnabled : true,
+        cloudUpload,
       }
 
       let res: Response
@@ -285,6 +299,34 @@ export function ScheduleModal({
                 </a>
                 에서 구성합니다
               </p>
+            </div>
+
+            {/* Section 6: 클라우드 업로드 */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={cloudUpload}
+                  onCheckedChange={setCloudUpload}
+                  disabled={!cloudStorageConfigured}
+                  aria-label="백업 파일 클라우드 업로드"
+                />
+                <Label className={!cloudStorageConfigured ? "text-neutral-400" : ""}>
+                  백업 완료 후 클라우드 업로드
+                </Label>
+              </div>
+              {!cloudStorageConfigured && (
+                <p className="text-xs text-neutral-400">
+                  클라우드 스토리지 설정이 필요합니다.{" "}
+                  <a href="/settings?tab=cloud-storage" className="text-indigo-600 underline">
+                    설정에서 구성하세요
+                  </a>
+                </p>
+              )}
+              {cloudStorageConfigured && (
+                <p className="text-xs text-neutral-400">
+                  백업 성공 시 S3 호환 스토리지에 자동 업로드됩니다
+                </p>
+              )}
             </div>
           </div>
 

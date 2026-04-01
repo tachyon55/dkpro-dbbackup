@@ -57,6 +57,7 @@ export async function GET(request: NextRequest) {
       durationMs: true,
       startedAt: true,
       completedAt: true,
+      cloudUploadStatus: true,
     },
   })
 

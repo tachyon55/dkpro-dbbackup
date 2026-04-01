@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { format } from "date-fns"
-import { History } from "lucide-react"
+import { History, Cloud, CloudOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -55,6 +55,7 @@ interface HistoryItem {
   durationMs: number | null
   startedAt: string
   completedAt: string | null
+  cloudUploadStatus: string | null
 }
 
 interface ConnectionOption {
@@ -157,6 +158,24 @@ export function HistoryPageClient() {
     setFilterStatus("")
     setFilterStartDate("")
     setFilterEndDate("")
+  }
+
+  // ── Cloud upload icon ─────────────────────────────────────────────────────
+
+  function CloudUploadIcon({ status }: { status: string | null }) {
+    if (!status || status === "skipped") return null
+    if (status === "success") {
+      return (
+        <span title="S3 업로드 성공" className="inline-flex items-center ml-1.5 text-blue-500">
+          <Cloud className="h-3.5 w-3.5" />
+        </span>
+      )
+    }
+    return (
+      <span title="S3 업로드 실패" className="inline-flex items-center ml-1.5 text-red-400">
+        <CloudOff className="h-3.5 w-3.5" />
+      </span>
+    )
   }
 
   // ── Status badge ──────────────────────────────────────────────────────────
@@ -307,7 +326,10 @@ export function HistoryPageClient() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status={item.status} />
+                    <div className="flex items-center">
+                      <StatusBadge status={item.status} />
+                      <CloudUploadIcon status={item.cloudUploadStatus} />
+                    </div>
                   </TableCell>
                   <TableCell>
                     <span className="font-mono text-xs max-w-[240px] truncate block">
