@@ -29,7 +29,7 @@
 - [x] 대시보드 (연결 상태, 최근 백업, 스케줄 요약) — Validated in Phase 4: Dashboard + Foundation
 - [x] SQL 쿼리 실행기 (SELECT/DML 지원) — Validated in Phase 5: SQL Query Executor
 - [x] 저장된 쿼리 관리 (CRUD) — Validated in Phase 5
-- [ ] 클라우드 스토리지 업로드 옵션
+- [x] 클라우드 스토리지 업로드 옵션 — Validated in Phase 6: Cloud Storage Upload
 
 ### Out of Scope
 
