@@ -49,6 +49,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-01
-Stopped at: Milestone v1.0 archived
+Last session: 2026-04-06
+Stopped at: Quick task 260406-mp8 complete (connection-level backup storage)
 Resume file: None
