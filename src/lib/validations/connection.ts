@@ -15,6 +15,8 @@ const baseFields = {
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/, "유효한 색상 코드를 선택해주세요")
     .optional(),
+  backupStorageType: z.enum(["local", "cloud"]).default("local").optional(),
+  backupLocalPath: z.string().nullable().optional(),
 }
 
 export const createConnectionSchema = z.object(baseFields).superRefine((data, ctx) => {

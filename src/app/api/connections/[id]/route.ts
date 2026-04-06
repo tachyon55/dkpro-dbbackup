@@ -19,6 +19,8 @@ const CONNECTION_SELECT = {
   sid: true,
   serviceName: true,
   color: true,
+  backupStorageType: true,
+  backupLocalPath: true,
   createdAt: true,
   updatedAt: true,
 } as const
@@ -105,6 +107,8 @@ export async function PUT(
   if (data.sid !== undefined) updateData.sid = data.sid
   if (data.serviceName !== undefined) updateData.serviceName = data.serviceName
   if (data.color !== undefined) updateData.color = data.color
+  if (data.backupStorageType !== undefined) updateData.backupStorageType = data.backupStorageType
+  if (data.backupLocalPath !== undefined) updateData.backupLocalPath = data.backupLocalPath
 
   const connection = await prisma.dbConnection.update({
     where: { id },
