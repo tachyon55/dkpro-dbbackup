@@ -18,6 +18,7 @@ const CONNECTION_SELECT = {
   filePath: true,
   sid: true,
   serviceName: true,
+  toolPath: true,
   color: true,
   backupStorageType: true,
   backupLocalPath: true,
@@ -106,6 +107,7 @@ export async function PUT(
   if (data.filePath !== undefined) updateData.filePath = data.filePath
   if (data.sid !== undefined) updateData.sid = data.sid
   if (data.serviceName !== undefined) updateData.serviceName = data.serviceName
+  if (data.toolPath !== undefined) updateData.toolPath = data.toolPath
   if (data.color !== undefined) updateData.color = data.color
   if (data.backupStorageType !== undefined) updateData.backupStorageType = data.backupStorageType
   if (data.backupLocalPath !== undefined) updateData.backupLocalPath = data.backupLocalPath

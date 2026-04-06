@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 Phase: —
 Plan: —
 Status: Milestone v1.0 archived ✅
-Last activity: 2026-04-01
+Last activity: 2026-04-06 - Completed quick task 260406-mp8: Connection 백업 저장 경로 설정
 
 Progress: [██████████] 100%
 
@@ -46,6 +46,12 @@ None.
 
 - Oracle expdp / SQL Server BACKUP DATABASE TO DISK stdout 비스트리밍: 진행률 전략 미완 (v2.0 고려)
 - 서버 재시작 시 중단 스케줄 복구 구현 검증 필요 (v2.0 고려)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260406-mp8 | Connection에 백업 저장 경로(로컬/클라우드) 필드 추가, 스케줄에서 해당 값 읽기 전용으로 표시, 백업 실행시 Connection 설정 경로 사용 | 2026-04-06 | 52a897f | [260406-mp8-connection-connection](./quick/260406-mp8-connection-connection/) |
 
 ## Session Continuity
 

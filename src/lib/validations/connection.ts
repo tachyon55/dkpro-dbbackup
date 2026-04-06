@@ -11,6 +11,7 @@ const baseFields = {
   filePath: z.string().nullable().optional(),
   sid: z.string().nullable().optional(),
   serviceName: z.string().nullable().optional(),
+  toolPath: z.string().nullable().optional(),
   color: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/, "유효한 색상 코드를 선택해주세요")

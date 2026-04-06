@@ -1,9 +1,10 @@
 "use client"
 
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { formatDistanceToNow } from "date-fns"
 import { ko } from "date-fns/locale"
-import { Database, CheckCircle2, AlertCircle, Clock } from "lucide-react"
+import { Database, CheckCircle2, AlertCircle, Clock, FolderOpen, X } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import {
   Table,
@@ -25,6 +26,7 @@ interface DashboardProps {
     dbType: string
     status: string
     fileName: string | null
+    filePath: string | null
     fileSizeBytes: string | null
     startedAt: string
     durationMs: number | null
@@ -82,6 +84,12 @@ export function DashboardClient({
   connectionStatuses,
 }: DashboardProps) {
   const router = useRouter()
+  const [expandedPathId, setExpandedPathId] = useState<string | null>(null)
+
+  function toggleFilePath(id: string, filePath: string | null) {
+    if (!filePath) return
+    setExpandedPathId((prev) => (prev === id ? null : id))
+  }
 
   return (
     <div className="p-6">
@@ -226,23 +234,64 @@ export function DashboardClient({
                 </TableHeader>
                 <TableBody>
                   {recentHistory.map((h) => (
-                    <TableRow key={h.id}>
-                      <TableCell className="text-sm font-semibold truncate max-w-[100px]">
-                        {h.connectionName}
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge status={h.status} />
-                      </TableCell>
-                      <TableCell className="text-sm text-neutral-600 truncate max-w-[120px]">
-                        {h.fileName ?? "-"}
-                      </TableCell>
-                      <TableCell className="text-sm text-neutral-500">
-                        {formatFileSize(h.fileSizeBytes)}
-                      </TableCell>
-                      <TableCell className="text-sm text-neutral-500">
-                        {relativeTime(h.startedAt)}
-                      </TableCell>
-                    </TableRow>
+                    <React.Fragment key={h.id}>
+                      <TableRow>
+                        <TableCell className="text-sm font-semibold truncate max-w-[100px]">
+                          {h.connectionName}
+                        </TableCell>
+                        <TableCell>
+                          <StatusBadge status={h.status} />
+                        </TableCell>
+                        <TableCell className="max-w-[120px]">
+                          {h.fileName ? (
+                            <button
+                              type="button"
+                              onClick={() => toggleFilePath(h.id, h.filePath)}
+                              className={`flex items-center gap-1 text-sm truncate max-w-full text-left ${
+                                h.filePath
+                                  ? "text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                                  : "text-neutral-600 cursor-default"
+                              }`}
+                              title={h.filePath ? "클릭하여 전체 경로 보기" : undefined}
+                            >
+                              {h.filePath && (
+                                <FolderOpen className="h-3.5 w-3.5 shrink-0" />
+                              )}
+                              <span className="truncate">{h.fileName}</span>
+                            </button>
+                          ) : (
+                            <span className="text-sm text-neutral-400">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm text-neutral-500">
+                          {formatFileSize(h.fileSizeBytes)}
+                        </TableCell>
+                        <TableCell className="text-sm text-neutral-500">
+                          {relativeTime(h.startedAt)}
+                        </TableCell>
+                      </TableRow>
+                      {expandedPathId === h.id && h.filePath && (
+                        <TableRow key={`${h.id}-path`} className="bg-blue-50 hover:bg-blue-50">
+                          <TableCell colSpan={5} className="py-2 px-4">
+                            <div className="flex items-start gap-2">
+                              <span className="text-xs text-blue-500 font-medium shrink-0 mt-0.5">
+                                전체 경로
+                              </span>
+                              <span className="text-xs text-blue-800 break-all font-mono flex-1">
+                                {h.filePath}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setExpandedPathId(null)}
+                                className="text-blue-400 hover:text-blue-600 shrink-0"
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>

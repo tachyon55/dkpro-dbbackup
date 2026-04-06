@@ -3,7 +3,11 @@ export async function register() {
     const { recoverOrphanedBackups } = await import("@/lib/backup-store")
     const { loadAllSchedules } = await import("@/lib/scheduler")
 
-    await recoverOrphanedBackups()
-    await loadAllSchedules()
+    try {
+      await recoverOrphanedBackups()
+      await loadAllSchedules()
+    } catch (err) {
+      console.error("[instrumentation] DB not ready at startup — skipping recovery:", err)
+    }
   }
 }

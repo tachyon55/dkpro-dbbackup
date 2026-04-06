@@ -118,6 +118,7 @@ model DbConnection {
   filePath     String?  // SQLite only
   sid          String?  // Oracle SID
   serviceName  String?  // Oracle Service Name
+  toolPath     String?  // Full path to backup tool binary (e.g. /usr/bin/mysqldump)
   color        String   @default("#6366f1")  // hex color from preset palette
   toolPath     String?  // optional path to native dump tool binary
   backupStorageType String @default("local") // "local" or "cloud"

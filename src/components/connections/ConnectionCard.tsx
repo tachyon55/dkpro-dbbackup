@@ -24,6 +24,7 @@ export type Connection = {
   filePath: string | null
   sid: string | null
   serviceName: string | null
+  toolPath: string | null
   color: string
   backupStorageType: string
   backupLocalPath: string | null

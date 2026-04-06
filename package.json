@@ -7,10 +7,10 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "seed": "npx tsx src/lib/seed.ts"
+    "seed": "node --env-file=.env.local --import tsx src/lib/seed.ts"
   },
   "prisma": {
-    "seed": "npx tsx src/lib/seed.ts"
+    "seed": "node --env-file=.env.local --import tsx src/lib/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

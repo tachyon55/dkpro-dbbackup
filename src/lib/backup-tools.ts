@@ -21,6 +21,7 @@ export interface DecryptedConnection {
   filePath?: string | null
   sid?: string | null
   serviceName?: string | null
+  toolPath?: string | null  // custom binary path (overrides default)
 }
 
 // ── Spawn args builder ───────────────────────────────────────────────────────
@@ -43,7 +44,7 @@ export function buildSpawnArgs(
     case "mysql":
     case "mariadb":
       return {
-        cmd: "mysqldump",
+        cmd: conn.toolPath || "mysqldump",
         args: [
           "-h", host,
           "-P", String(port),
@@ -55,7 +56,7 @@ export function buildSpawnArgs(
 
     case "postgresql":
       return {
-        cmd: "pg_dump",
+        cmd: conn.toolPath || "pg_dump",
         args: [
           "-h", host,
           "-p", String(port),
@@ -71,7 +72,7 @@ export function buildSpawnArgs(
       // sqlcmd writes to disk directly — no stdout stream
       const query = `BACKUP DATABASE [${database}] TO DISK=N'${outputPath}' WITH FORMAT`
       return {
-        cmd: "sqlcmd",
+        cmd: conn.toolPath || "sqlcmd",
         args: [
           "-S", `${host},${port}`,
           "-U", username,
@@ -87,7 +88,7 @@ export function buildSpawnArgs(
       const fileName = path.basename(outputPath)
       const logFileName = fileName.replace(/\.dmp$/, ".log")
       return {
-        cmd: "expdp",
+        cmd: conn.toolPath || "expdp",
         args: [
           `${username}/${password}@${host}:${port}/${serviceOrSid}`,
           "DIRECTORY=DATA_PUMP_DIR",
@@ -99,7 +100,7 @@ export function buildSpawnArgs(
 
     case "sqlite":
       return {
-        cmd: "sqlite3",
+        cmd: conn.toolPath || "sqlite3",
         args: [conn.filePath ?? database, ".dump"],
       }
 

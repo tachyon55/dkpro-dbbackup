@@ -47,6 +47,17 @@ const modalSchema = z.object({
 
 type ModalForm = z.infer<typeof modalSchema>
 
+// ── Default tool names per DB type ────────────────────────────────────────────
+
+const DEFAULT_TOOL: Record<string, string> = {
+  mysql: "mysqldump",
+  mariadb: "mysqldump",
+  postgresql: "pg_dump",
+  sqlserver: "sqlcmd",
+  oracle: "expdp",
+  sqlite: "sqlite3",
+}
+
 // ── Default ports ─────────────────────────────────────────────────────────────
 
 const DEFAULT_PORTS: Record<string, string> = {
@@ -184,17 +195,44 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
   // ── Test connection ────────────────────────────────────────────────────────
 
   async function handleTest() {
-    if (!connection?.id) return
     setTestLoading(true)
     setTestResult(null)
     try {
-      const res = await fetch(`/api/connections/${connection.id}/test`, { method: "POST" })
+      let res: Response
+      if (isEdit && connection?.id) {
+        // Edit mode: use saved connection (server decrypts password)
+        res = await fetch(`/api/connections/${connection.id}/test`, { method: "POST" })
+      } else {
+        // Create mode: send form values directly
+        const values = form.getValues()
+        const portNum = values.port ? parseInt(values.port, 10) : null
+        res = await fetch("/api/connections/test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: values.type,
+            host: values.host || null,
+            port: portNum && !isNaN(portNum) ? portNum : null,
+            username: values.username || null,
+            password: values.password || null,
+            database: values.database || null,
+            filePath: values.filePath || null,
+            sid: values.oracleMode === "sid" ? (values.sid || null) : null,
+            serviceName: values.oracleMode === "serviceName" ? (values.serviceName || null) : null,
+          }),
+        })
+      }
       const json = await res.json()
       if (!res.ok) {
         setTestResult({ success: false, message: json.error ?? "연결 테스트 실패" })
         return
       }
-      setTestResult(json.data)
+      const d = json.data
+      setTestResult({
+        success: d.success,
+        message: d.message ?? d.error ?? (d.success ? "연결 성공" : "연결 실패"),
+        responseTime: d.responseTime ?? d.latencyMs,
+      })
     } catch {
       setTestResult({ success: false, message: "서버 연결 오류" })
     } finally {
@@ -507,42 +545,40 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
             )}
           </div>
 
-          {/* Section 4 — 연결 테스트 (edit mode only) */}
-          {isEdit && connection?.id && (
-            <div className="space-y-3">
-              <h3 className="text-sm font-medium text-neutral-700 border-b pb-1">연결 테스트</h3>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleTest}
-                disabled={testLoading}
-                className="w-full"
+          {/* Section 4 — 연결 테스트 */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-neutral-700 border-b pb-1">연결 테스트</h3>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleTest}
+              disabled={testLoading}
+              className="w-full"
+            >
+              {testLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              연결 테스트
+            </Button>
+            {testResult && (
+              <div
+                className={`flex items-center gap-2 text-sm px-3 py-2 rounded-md ${
+                  testResult.success
+                    ? "bg-green-50 text-green-700 border border-green-200"
+                    : "bg-red-50 text-red-700 border border-red-200"
+                }`}
               >
-                {testLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                연결 테스트
-              </Button>
-              {testResult && (
-                <div
-                  className={`flex items-center gap-2 text-sm px-3 py-2 rounded-md ${
-                    testResult.success
-                      ? "bg-green-50 text-green-700 border border-green-200"
-                      : "bg-red-50 text-red-700 border border-red-200"
-                  }`}
-                >
-                  {testResult.success ? (
-                    <CheckCircle className="h-4 w-4 shrink-0" />
-                  ) : (
-                    <XCircle className="h-4 w-4 shrink-0" />
-                  )}
-                  <span>
-                    {testResult.success
-                      ? `연결 성공${testResult.responseTime !== undefined ? ` (${testResult.responseTime}ms)` : ""}`
-                      : testResult.message}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
+                {testResult.success ? (
+                  <CheckCircle className="h-4 w-4 shrink-0" />
+                ) : (
+                  <XCircle className="h-4 w-4 shrink-0" />
+                )}
+                <span>
+                  {testResult.success
+                    ? `연결 성공${testResult.responseTime !== undefined ? ` (${testResult.responseTime}ms)` : ""}`
+                    : testResult.message}
+                </span>
+              </div>
+            )}
+          </div>
 
           <DialogFooter className="pt-2">
             <Button type="button" variant="ghost" onClick={onClose}>

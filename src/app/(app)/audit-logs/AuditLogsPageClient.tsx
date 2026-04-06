@@ -31,6 +31,15 @@ type AuditEventType =
   | "CONN_UPDATE"
   | "CONN_DELETE"
   | "CONN_TEST"
+  | "BACKUP_START"
+  | "BACKUP_COMPLETE"
+  | "BACKUP_FAIL"
+  | "SCHEDULE_CREATE"
+  | "SCHEDULE_UPDATE"
+  | "SCHEDULE_DELETE"
+  | "SCHEDULE_RUN"
+  | "NOTIF_SENT"
+  | "NOTIF_FAIL"
 
 const EVENT_LABELS: Record<AuditEventType, string> = {
   LOGIN: "로그인",
@@ -43,6 +52,15 @@ const EVENT_LABELS: Record<AuditEventType, string> = {
   CONN_UPDATE: "연결 수정",
   CONN_DELETE: "연결 삭제",
   CONN_TEST: "연결 테스트",
+  BACKUP_START: "백업 시작",
+  BACKUP_COMPLETE: "백업 완료",
+  BACKUP_FAIL: "백업 실패",
+  SCHEDULE_CREATE: "스케줄 생성",
+  SCHEDULE_UPDATE: "스케줄 수정",
+  SCHEDULE_DELETE: "스케줄 삭제",
+  SCHEDULE_RUN: "스케줄 실행",
+  NOTIF_SENT: "알림 전송",
+  NOTIF_FAIL: "알림 실패",
 }
 
 type AuditLog = {

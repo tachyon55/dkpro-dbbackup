@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { CheckCircle, Loader2, XCircle } from "lucide-react"
 import {
   Sheet,
   SheetContent,
@@ -23,6 +24,10 @@ const DB_TYPE_LABELS: Record<Connection["type"], string> = {
   sqlite: "SQLite",
 }
 
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+type TestResult = { success: boolean; message: string; responseTime?: number } | null
+
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 type Props = {
@@ -36,9 +41,9 @@ type Props = {
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex gap-3 py-2 border-b border-neutral-100 last:border-0">
-      <span className="text-sm text-neutral-500 w-28 shrink-0">{label}</span>
-      <span className="text-sm text-neutral-900 break-all">{value ?? "—"}</span>
+    <div className="flex gap-3 py-2 border-b border-border last:border-0">
+      <span className="text-sm text-muted-foreground w-28 shrink-0">{label}</span>
+      <span className="text-sm text-foreground break-all">{value ?? "—"}</span>
     </div>
   )
 }
@@ -50,6 +55,8 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
   const [databases, setDatabases] = useState<string[]>([])
   const [dbLoading, setDbLoading] = useState(false)
   const [dbError, setDbError] = useState<string | null>(null)
+  const [testResult, setTestResult] = useState<TestResult>(null)
+  const [testLoading, setTestLoading] = useState(false)
 
   // Reset tab when connection changes
   useEffect(() => {
@@ -57,6 +64,7 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
       setActiveTab("info")
       setDatabases([])
       setDbError(null)
+      setTestResult(null)
     }
   }, [connection?.id])
 
@@ -77,6 +85,30 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
       .catch(() => setDbError("서버 연결 오류"))
       .finally(() => setDbLoading(false))
   }, [activeTab, connection?.id])
+
+  async function handleTest() {
+    if (!connection?.id) return
+    setTestLoading(true)
+    setTestResult(null)
+    try {
+      const res = await fetch(`/api/connections/${connection.id}/test`, { method: "POST" })
+      const json = await res.json()
+      if (!res.ok) {
+        setTestResult({ success: false, message: json.error ?? "연결 테스트 실패" })
+        return
+      }
+      const d = json.data
+      setTestResult({
+        success: d.success,
+        message: d.message ?? d.error ?? (d.success ? "연결 성공" : "연결 실패"),
+        responseTime: d.responseTime ?? d.latencyMs,
+      })
+    } catch {
+      setTestResult({ success: false, message: "서버 연결 오류" })
+    } finally {
+      setTestLoading(false)
+    }
+  }
 
   function handleEdit() {
     if (connection) {
@@ -125,7 +157,7 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
 
           {/* 정보 tab */}
           <TabsContent value="info" className="flex-1 overflow-y-auto mt-4 space-y-0">
-            <div className="divide-y divide-neutral-100">
+            <div className="divide-y divide-border">
               <Field label="연결 이름" value={connection.name} />
               <Field label="DB 타입" value={DB_TYPE_LABELS[connection.type]} />
               {connection.type === "sqlite" ? (
@@ -146,6 +178,9 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
                   )}
                 </>
               )}
+              {connection.toolPath && (
+                <Field label="백업 도구 경로" value={connection.toolPath} />
+              )}
               <Field
                 label="백업 저장"
                 value={connection.backupStorageType === "cloud" ? "클라우드" : "로컬"}
@@ -161,7 +196,7 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
                 value={
                   <span className="flex items-center gap-2">
                     <span
-                      className="inline-block w-4 h-4 rounded-full border border-neutral-200"
+                      className="inline-block w-4 h-4 rounded-full border border-border"
                       style={{ backgroundColor: connection.color }}
                     />
                     {connection.color}
@@ -171,7 +206,38 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
               <Field label="생성일" value={createdAt} />
               <Field label="수정일" value={updatedAt} />
             </div>
-            <div className="pt-4">
+
+            {/* 연결 테스트 */}
+            <div className="pt-4 space-y-2">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={handleTest}
+                disabled={testLoading}
+              >
+                {testLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                연결 테스트
+              </Button>
+              {testResult && (
+                <div
+                  className={`flex items-center gap-2 text-sm px-3 py-2 rounded-md ${
+                    testResult.success
+                      ? "bg-green-50 text-green-700 border border-green-200"
+                      : "bg-red-50 text-red-700 border border-red-200"
+                  }`}
+                >
+                  {testResult.success ? (
+                    <CheckCircle className="h-4 w-4 shrink-0" />
+                  ) : (
+                    <XCircle className="h-4 w-4 shrink-0" />
+                  )}
+                  <span>
+                    {testResult.success
+                      ? `연결 성공${testResult.responseTime !== undefined ? ` (${testResult.responseTime}ms)` : ""}`
+                      : testResult.message}
+                  </span>
+                </div>
+              )}
               <Button variant="outline" className="w-full" onClick={handleEdit}>
                 수정
               </Button>
@@ -199,7 +265,7 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
                 {databases.map((db) => (
                   <li
                     key={db}
-                    className="text-sm px-3 py-2 rounded-md bg-neutral-50 hover:bg-neutral-100 text-neutral-800"
+                    className="text-sm px-3 py-2 rounded-md bg-muted hover:bg-accent text-foreground"
                   >
                     {db}
                   </li>
