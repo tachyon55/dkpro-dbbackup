@@ -1,5 +1,6 @@
 import { schedule as cronSchedule } from "node-cron"
 import type { ScheduledTask } from "node-cron"
+import { mkdir } from "fs/promises"
 import { prisma } from "@/lib/prisma"
 import { createAuditLog } from "@/lib/audit"
 import { runRetentionCleanup } from "@/lib/cleanup"
@@ -80,8 +81,14 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
   const schedule = await prisma.schedule.findUnique({ where: { connectionId } })
   if (!schedule) return
 
-  // Determine backup directory — use custom path if configured, else default
-  const backupDir = schedule.backupPath ? schedule.backupPath : await getBackupDir(connectionId)
+  // Determine backup directory — Connection setting takes priority over schedule.backupPath
+  let backupDir: string
+  if (conn.backupStorageType === "local" && conn.backupLocalPath) {
+    backupDir = conn.backupLocalPath
+    await mkdir(backupDir, { recursive: true })
+  } else {
+    backupDir = await getBackupDir(connectionId)
+  }
 
   // D-Pitfall-6: Update lastRunAt BEFORE runBackup to prevent duplicate catch-ups on restart
   await prisma.schedule.update({
@@ -119,8 +126,9 @@ export async function runScheduledBackup(connectionId: string): Promise<void> {
       )
     }
 
-    // D-01, D-02: S3 upload after successful backup if cloudUpload=true
-    if (schedule.cloudUpload) {
+    // D-01, D-02: S3 upload after successful backup if cloudUpload=true or conn type is cloud
+    const shouldCloudUpload = schedule.cloudUpload || conn.backupStorageType === "cloud"
+    if (shouldCloudUpload) {
       const completedRecord = await prisma.backupHistory.findUnique({ where: { id: record.id } })
       if (completedRecord?.fileName) {
         const { uploadToS3 } = await import("@/lib/s3-upload")
