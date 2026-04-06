@@ -41,6 +41,8 @@ const modalSchema = z.object({
   sid: z.string().optional(),
   serviceName: z.string().optional(),
   oracleMode: z.enum(["sid", "serviceName"]).optional(),
+  backupStorageType: z.enum(["local", "cloud"]),
+  backupLocalPath: z.string().optional(),
 })
 
 type ModalForm = z.infer<typeof modalSchema>
@@ -106,11 +108,14 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
       sid: "",
       serviceName: "",
       oracleMode: "sid",
+      backupStorageType: "local" as "local" | "cloud",
+      backupLocalPath: "",
     },
   })
 
   const watchedType = form.watch("type")
   const watchedName = form.watch("name")
+  const watchedStorageType = form.watch("backupStorageType")
 
   // Sync form when editing existing connection
   useEffect(() => {
@@ -128,6 +133,8 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
         sid: connection.sid ?? "",
         serviceName: connection.serviceName ?? "",
         oracleMode: connection.serviceName ? "serviceName" : "sid",
+        backupStorageType: (connection.backupStorageType ?? "local") as "local" | "cloud",
+        backupLocalPath: connection.backupLocalPath ?? "",
       })
       setTestResult(null)
     }
@@ -149,6 +156,8 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
         sid: "",
         serviceName: "",
         oracleMode: "sid",
+        backupStorageType: "local",
+        backupLocalPath: "",
       })
       setTestResult(null)
     }
@@ -209,6 +218,8 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
       filePath: data.filePath || null,
       sid: data.oracleMode === "sid" ? (data.sid || null) : null,
       serviceName: data.oracleMode === "serviceName" ? (data.serviceName || null) : null,
+      backupStorageType: data.backupStorageType ?? "local",
+      backupLocalPath: data.backupStorageType === "local" ? (data.backupLocalPath || null) : null,
     }
 
     // In edit mode, only include password if non-empty
@@ -457,7 +468,46 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
             {renderConnectionFields()}
           </div>
 
-          {/* Section 3 — 연결 테스트 (edit mode only) */}
+          {/* Section 3 — 백업 저장 설정 */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-neutral-700 border-b pb-1">백업 저장 설정</h3>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value="local"
+                  {...form.register("backupStorageType")}
+                  className="accent-indigo-600"
+                />
+                <span className="text-sm">로컬 저장</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value="cloud"
+                  {...form.register("backupStorageType")}
+                  className="accent-indigo-600"
+                />
+                <span className="text-sm">클라우드 저장</span>
+              </label>
+            </div>
+            {watchedStorageType === "local" ? (
+              <div className="space-y-1">
+                <Label htmlFor="backupLocalPath">백업 저장 경로</Label>
+                <Input
+                  id="backupLocalPath"
+                  {...form.register("backupLocalPath")}
+                  placeholder="기본 경로 사용 (비워두면 자동)"
+                />
+              </div>
+            ) : (
+              <p className="text-sm text-neutral-500">
+                클라우드 스토리지 설정에 따라 자동 업로드됩니다
+              </p>
+            )}
+          </div>
+
+          {/* Section 4 — 연결 테스트 (edit mode only) */}
           {isEdit && connection?.id && (
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-neutral-700 border-b pb-1">연결 테스트</h3>

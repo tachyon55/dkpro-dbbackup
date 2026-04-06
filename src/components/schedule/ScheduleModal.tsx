@@ -54,6 +54,8 @@ type Props = {
   connectionName: string
   schedule: ScheduleData | null // null = creating new
   onSaved: () => void // callback to refresh parent
+  backupStorageType?: string
+  backupLocalPath?: string | null
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -65,10 +67,11 @@ export function ScheduleModal({
   connectionName,
   schedule,
   onSaved,
+  backupStorageType,
+  backupLocalPath,
 }: Props) {
   const [hour, setHour] = useState(2)
   const [minute, setMinute] = useState(0)
-  const [backupPath, setBackupPath] = useState("")
   const [retentionDays, setRetentionDays] = useState(30)
   const [catchUpOnRestart, setCatchUpOnRestart] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false)
@@ -84,7 +87,6 @@ export function ScheduleModal({
       if (schedule) {
         setHour(schedule.hour)
         setMinute(schedule.minute)
-        setBackupPath(schedule.backupPath ?? "")
         setRetentionDays(schedule.retentionDays)
         setCatchUpOnRestart(schedule.catchUpOnRestart)
         setNotificationsEnabled(schedule.notificationsEnabled)
@@ -92,7 +94,6 @@ export function ScheduleModal({
       } else {
         setHour(2)
         setMinute(0)
-        setBackupPath("")
         setRetentionDays(30)
         setCatchUpOnRestart(false)
         setNotificationsEnabled(false)
@@ -118,7 +119,6 @@ export function ScheduleModal({
         connectionId,
         hour,
         minute,
-        backupPath: backupPath || null,
         retentionDays,
         notificationsEnabled,
         catchUpOnRestart,
@@ -233,17 +233,18 @@ export function ScheduleModal({
               </p>
             </div>
 
-            {/* Section 2: 백업 저장 경로 */}
+            {/* Section 2: 백업 저장 설정 (읽기 전용 — 연결 설정에서 관리) */}
             <div className="space-y-2">
-              <Label htmlFor="backupPath">백업 저장 경로</Label>
-              <Input
-                id="backupPath"
-                value={backupPath}
-                onChange={(e) => setBackupPath(e.target.value)}
-                placeholder="기본 경로 사용"
-              />
+              <Label>백업 저장 설정</Label>
+              <div className="px-3 py-2 bg-neutral-50 rounded-md border text-sm text-neutral-700">
+                {backupStorageType === "cloud"
+                  ? "클라우드 저장"
+                  : backupLocalPath
+                    ? backupLocalPath
+                    : "기본 경로"}
+              </div>
               <p className="text-xs text-neutral-400">
-                비워두면 기본 백업 폴더를 사용합니다
+                백업 저장 경로는 연결 설정에서 변경할 수 있습니다
               </p>
             </div>
 
