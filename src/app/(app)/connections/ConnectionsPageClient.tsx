@@ -369,6 +369,8 @@ export function ConnectionsPageClient({ userRole }: Props) {
         connectionName={scheduleTarget?.name ?? ""}
         schedule={scheduleTarget ? schedules[scheduleTarget.id] ?? null : null}
         onSaved={handleScheduleSaved}
+        backupStorageType={scheduleTarget?.backupStorageType ?? "local"}
+        backupLocalPath={scheduleTarget?.backupLocalPath ?? null}
       />
     </div>
   )

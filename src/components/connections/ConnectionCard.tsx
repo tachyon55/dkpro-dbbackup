@@ -25,6 +25,8 @@ export type Connection = {
   sid: string | null
   serviceName: string | null
   color: string
+  backupStorageType: string
+  backupLocalPath: string | null
   createdAt: string
   updatedAt: string
   schedule?: {

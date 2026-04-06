@@ -1,6 +1,6 @@
 import { spawn } from "child_process"
 import { createWriteStream, createReadStream } from "fs"
-import { stat } from "fs/promises"
+import { stat, mkdir } from "fs/promises"
 import { createHash } from "crypto"
 import path from "path"
 import { prisma } from "@/lib/prisma"
@@ -91,8 +91,16 @@ export async function runBackup(historyId: string, send: SendFn, backupDir?: str
 
   const decryptedConn = { ...conn, password: decryptedPassword }
 
-  // 4. Build output path — use caller-provided dir if given, else derive default
-  const resolvedBackupDir = backupDir ?? await getBackupDir(connectionId)
+  // 4. Build output path — priority: 1) caller backupDir 2) conn.backupLocalPath 3) default
+  let resolvedBackupDir: string
+  if (backupDir) {
+    resolvedBackupDir = backupDir
+  } else if (conn.backupStorageType === "local" && conn.backupLocalPath) {
+    resolvedBackupDir = conn.backupLocalPath
+    await mkdir(resolvedBackupDir, { recursive: true })
+  } else {
+    resolvedBackupDir = await getBackupDir(connectionId)
+  }
   const fileName = generateBackupFileName(conn.database ?? conn.name, conn.type)
   const outputPath = path.join(resolvedBackupDir, fileName)
 
@@ -156,6 +164,26 @@ export async function runBackup(historyId: string, send: SendFn, backupDir?: str
         logLines,
         send,
       })
+    }
+
+    // ── Cloud upload for manual backups when connection type is "cloud" ──────
+    if (conn.backupStorageType === "cloud") {
+      try {
+        const { uploadToS3 } = await import("@/lib/s3-upload")
+        send("log", { line: "클라우드 업로드 중...", source: "system" })
+        await uploadToS3(outputPath, conn.name, fileName)
+        await prisma.backupHistory.update({
+          where: { id: historyId },
+          data: { cloudUploadStatus: "success" },
+        })
+        send("log", { line: "클라우드 업로드 완료", source: "system" })
+      } catch (uploadErr) {
+        await prisma.backupHistory.update({
+          where: { id: historyId },
+          data: { cloudUploadStatus: "failed" },
+        })
+        send("cloud_upload_error", { message: (uploadErr as Error).message })
+      }
     }
   } catch (err) {
     errorMessage = err instanceof Error ? err.message : String(err)

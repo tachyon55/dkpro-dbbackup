@@ -147,6 +147,16 @@ export function ConnectionDetail({ connection, open, onClose, onEdit }: Props) {
                 </>
               )}
               <Field
+                label="백업 저장"
+                value={connection.backupStorageType === "cloud" ? "클라우드" : "로컬"}
+              />
+              {connection.backupStorageType !== "cloud" && (
+                <Field
+                  label="백업 경로"
+                  value={connection.backupLocalPath ?? "기본 경로"}
+                />
+              )}
+              <Field
                 label="색상"
                 value={
                   <span className="flex items-center gap-2">

@@ -119,6 +119,9 @@ model DbConnection {
   sid          String?  // Oracle SID
   serviceName  String?  // Oracle Service Name
   color        String   @default("#6366f1")  // hex color from preset palette
+  toolPath     String?  // optional path to native dump tool binary
+  backupStorageType String @default("local") // "local" or "cloud"
+  backupLocalPath   String?                  // null = use getBackupDir() default
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
