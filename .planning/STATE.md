@@ -52,9 +52,10 @@ None.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260406-mp8 | Connection에 백업 저장 경로(로컬/클라우드) 필드 추가, 스케줄에서 해당 값 읽기 전용으로 표시, 백업 실행시 Connection 설정 경로 사용 | 2026-04-06 | 52a897f | [260406-mp8-connection-connection](./quick/260406-mp8-connection-connection/) |
+| 260408-ge8 | Netlify 배포 설정: netlify.toml 생성(@netlify/plugin-nextjs, prisma generate, 환경변수 문서화, Socket.io 제한 명시), next.config.ts Netlify 호환 주석 추가 | 2026-04-08 | e94a5c7 | [260408-ge8-netlify-netlify-toml-next-config](./quick/260408-ge8-netlify-netlify-toml-next-config/) |
 
 ## Session Continuity
 
-Last session: 2026-04-06
-Stopped at: Quick task 260406-mp8 complete (connection-level backup storage)
+Last session: 2026-04-08
+Stopped at: Quick task 260408-ge8 complete (Netlify deployment config)
 Resume file: None
