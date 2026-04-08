@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
-import { Loader2, CheckCircle, XCircle } from "lucide-react"
+import { Loader2, CheckCircle, XCircle, FolderOpen } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ColorPicker } from "./ColorPicker"
+import { FileBrowserDialog } from "./FileBrowserDialog"
 import type { Connection } from "./ConnectionCard"
 
 // ── Schema ────────────────────────────────────────────────────────────────────
@@ -104,6 +105,7 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
   const isEdit = mode === "edit"
   const [testResult, setTestResult] = useState<TestResult>(null)
   const [testLoading, setTestLoading] = useState(false)
+  const [toolPathBrowseOpen, setToolPathBrowseOpen] = useState(false)
 
   const form = useForm<ModalForm>({
     resolver: zodResolver(modalSchema),
@@ -518,15 +520,35 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
 
             <div className="space-y-1">
               <Label htmlFor="toolPath">백업 실행 경로</Label>
-              <Input
-                id="toolPath"
-                {...form.register("toolPath")}
-                placeholder={`${DEFAULT_TOOL[watchedType] ?? "dump tool"} 경로 (비워두면 기본 경로 사용)`}
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="toolPath"
+                  {...form.register("toolPath")}
+                  placeholder={`${DEFAULT_TOOL[watchedType] ?? "dump tool"} 경로 (비워두면 기본 경로 사용)`}
+                  className="font-mono text-sm"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
+                  onClick={() => setToolPathBrowseOpen(true)}
+                  title="파일 찾아보기"
+                >
+                  <FolderOpen className="h-4 w-4" />
+                </Button>
+              </div>
               <p className="text-xs text-neutral-400">
                 DB 버전별 dump 도구 경로가 다를 수 있습니다 (예: /usr/local/mysql/bin/mysqldump)
               </p>
             </div>
+            <FileBrowserDialog
+              open={toolPathBrowseOpen}
+              onClose={() => setToolPathBrowseOpen(false)}
+              onSelect={(p) => form.setValue("toolPath", p)}
+              mode="file"
+              title={`${DEFAULT_TOOL[watchedType] ?? "백업 도구"} 경로 선택`}
+            />
 
             {watchedStorageType === "local" ? (
               <div className="space-y-1">
