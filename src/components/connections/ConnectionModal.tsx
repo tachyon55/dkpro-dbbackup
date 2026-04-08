@@ -41,6 +41,7 @@ const modalSchema = z.object({
   sid: z.string().optional(),
   serviceName: z.string().optional(),
   oracleMode: z.enum(["sid", "serviceName"]).optional(),
+  toolPath: z.string().optional(),
   backupStorageType: z.enum(["local", "cloud"]),
   backupLocalPath: z.string().optional(),
 })
@@ -119,6 +120,7 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
       sid: "",
       serviceName: "",
       oracleMode: "sid",
+      toolPath: "",
       backupStorageType: "local" as "local" | "cloud",
       backupLocalPath: "",
     },
@@ -144,6 +146,7 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
         sid: connection.sid ?? "",
         serviceName: connection.serviceName ?? "",
         oracleMode: connection.serviceName ? "serviceName" : "sid",
+        toolPath: connection.toolPath ?? "",
         backupStorageType: (connection.backupStorageType ?? "local") as "local" | "cloud",
         backupLocalPath: connection.backupLocalPath ?? "",
       })
@@ -167,6 +170,7 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
         sid: "",
         serviceName: "",
         oracleMode: "sid",
+        toolPath: "",
         backupStorageType: "local",
         backupLocalPath: "",
       })
@@ -256,6 +260,7 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
       filePath: data.filePath || null,
       sid: data.oracleMode === "sid" ? (data.sid || null) : null,
       serviceName: data.oracleMode === "serviceName" ? (data.serviceName || null) : null,
+      toolPath: data.toolPath || null,
       backupStorageType: data.backupStorageType ?? "local",
       backupLocalPath: data.backupStorageType === "local" ? (data.backupLocalPath || null) : null,
     }
@@ -460,7 +465,16 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
         <form onSubmit={handleSubmit} className="space-y-6 py-2">
           {/* Section 1 — 기본 정보 */}
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-neutral-700 border-b pb-1">기본 정보</h3>
+            <div className="flex items-center justify-between border-b pb-1">
+              <h3 className="text-sm font-medium text-neutral-700">기본 정보</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-neutral-500">색상</span>
+                <ColorPicker
+                  value={form.watch("color") ?? "#3b82f6"}
+                  onChange={(c) => form.setValue("color", c)}
+                />
+              </div>
+            </div>
 
             <div className="space-y-1">
               <Label htmlFor="name">연결 이름</Label>
@@ -490,14 +504,6 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-1">
-              <Label>색상</Label>
-              <ColorPicker
-                value={form.watch("color") ?? "#3b82f6"}
-                onChange={(c) => form.setValue("color", c)}
-              />
-            </div>
           </div>
 
           {/* Section 2 — 접속 정보 */}
@@ -509,29 +515,44 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
           {/* Section 3 — 백업 저장 설정 */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-neutral-700 border-b pb-1">백업 저장 설정</h3>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="local"
-                  {...form.register("backupStorageType")}
-                  className="accent-indigo-600"
-                />
-                <span className="text-sm">로컬 저장</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="cloud"
-                  {...form.register("backupStorageType")}
-                  className="accent-indigo-600"
-                />
-                <span className="text-sm">클라우드 저장</span>
-              </label>
+
+            <div className="space-y-1">
+              <Label htmlFor="toolPath">백업 실행 경로</Label>
+              <Input
+                id="toolPath"
+                {...form.register("toolPath")}
+                placeholder={`${DEFAULT_TOOL[watchedType] ?? "dump tool"} 경로 (비워두면 기본 경로 사용)`}
+              />
+              <p className="text-xs text-neutral-400">
+                DB 버전별 dump 도구 경로가 다를 수 있습니다 (예: /usr/local/mysql/bin/mysqldump)
+              </p>
             </div>
+
             {watchedStorageType === "local" ? (
               <div className="space-y-1">
-                <Label htmlFor="backupLocalPath">백업 저장 경로</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="backupLocalPath">백업 저장 경로</Label>
+                  <div className="flex gap-3">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        value="local"
+                        {...form.register("backupStorageType")}
+                        className="accent-indigo-600"
+                      />
+                      <span className="text-xs">로컬 저장</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        value="cloud"
+                        {...form.register("backupStorageType")}
+                        className="accent-indigo-600"
+                      />
+                      <span className="text-xs">클라우드 저장</span>
+                    </label>
+                  </div>
+                </div>
                 <Input
                   id="backupLocalPath"
                   {...form.register("backupLocalPath")}
@@ -539,9 +560,34 @@ export function ConnectionModal({ mode, connection, open, onClose, onSuccess }: 
                 />
               </div>
             ) : (
-              <p className="text-sm text-neutral-500">
-                클라우드 스토리지 설정에 따라 자동 업로드됩니다
-              </p>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <Label>백업 저장 경로</Label>
+                  <div className="flex gap-3">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        value="local"
+                        {...form.register("backupStorageType")}
+                        className="accent-indigo-600"
+                      />
+                      <span className="text-xs">로컬 저장</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        value="cloud"
+                        {...form.register("backupStorageType")}
+                        className="accent-indigo-600"
+                      />
+                      <span className="text-xs">클라우드 저장</span>
+                    </label>
+                  </div>
+                </div>
+                <p className="text-sm text-neutral-500">
+                  클라우드 스토리지 설정에 따라 자동 업로드됩니다
+                </p>
+              </div>
             )}
           </div>
 
