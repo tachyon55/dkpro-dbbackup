@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 Phase: —
 Plan: —
 Status: Milestone v1.0 archived ✅
-Last activity: 2026-04-06 - Completed quick task 260406-mp8: Connection 백업 저장 경로 설정
+Last activity: 2026-04-08 - Completed quick task 260408-jf6: Netlify → Vercel 배포 설정 전환
 
 Progress: [██████████] 100%
 
@@ -53,9 +53,10 @@ None.
 |---|-------------|------|--------|-----------|
 | 260406-mp8 | Connection에 백업 저장 경로(로컬/클라우드) 필드 추가, 스케줄에서 해당 값 읽기 전용으로 표시, 백업 실행시 Connection 설정 경로 사용 | 2026-04-06 | 52a897f | [260406-mp8-connection-connection](./quick/260406-mp8-connection-connection/) |
 | 260408-ge8 | Netlify 배포 설정: netlify.toml 생성(@netlify/plugin-nextjs, prisma generate, 환경변수 문서화, Socket.io 제한 명시), next.config.ts Netlify 호환 주석 추가 | 2026-04-08 | e94a5c7 | [260408-ge8-netlify-netlify-toml-next-config](./quick/260408-ge8-netlify-netlify-toml-next-config/) |
+| 260408-jf6 | Netlify → Vercel 전환: netlify.toml 삭제, vercel.json 생성(prisma generate, Socket.io 제한 경고), .vercelignore 추가, next.config.ts Vercel 주석 업데이트 | 2026-04-08 | 9b45ce4 | [260408-jf6-vercel-netlify-toml-vercel-json-next-con](./quick/260408-jf6-vercel-netlify-toml-vercel-json-next-con/) |
 
 ## Session Continuity
 
 Last session: 2026-04-08
-Stopped at: Quick task 260408-ge8 complete (Netlify deployment config)
+Stopped at: Quick task 260408-jf6 complete (Vercel deployment config)
 Resume file: None
