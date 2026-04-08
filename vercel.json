@@ -1,8 +1,4 @@
 {
   "buildCommand": "npx prisma generate && next build",
-  "framework": "nextjs",
-  "_comments": {
-    "socket_io": "[중요] Socket.io 제한: Vercel 서버리스 환경에서는 영구 WebSocket 연결이 불가합니다. 실시간 백업 진행 상황 기능은 Vercel에서 동작하지 않습니다. 실시간 기능이 필요하면 Railway, Render, Fly.io 등 장기 실행 서버 환경을 사용하세요.",
-    "env_vars": "아래 환경변수를 Vercel 대시보드 > Project > Settings > Environment Variables 에서 설정하세요: DATABASE_URL, NEXTAUTH_URL, NEXTAUTH_SECRET, ENCRYPTION_KEY, AWS_ACCESS_KEY_ID (선택), AWS_SECRET_ACCESS_KEY (선택), AWS_REGION (선택)"
-  }
+  "framework": "nextjs"
 }
