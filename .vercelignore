@@ -1,0 +1,16 @@
+# 개발 및 계획 문서
+.planning/
+.claude/
+
+# 로컬 백업 파일 (배포 불필요)
+backups/
+
+# 환경변수 파일
+.env
+.env.local
+.env*.local
+
+# OS 및 에디터 파일
+.DS_Store
+Thumbs.db
+*.txt
